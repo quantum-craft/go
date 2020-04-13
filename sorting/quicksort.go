@@ -9,7 +9,7 @@ import (
 
 var r = rand.New(rand.NewSource(time.Now().Unix()))
 
-// QuickSort sorts array in-place with a smart randomized choice of pivot
+// QuickSort sorts array in-place with randomized choices of pivot
 func QuickSort(xs []int) {
 	if len(xs) <= 1 {
 		return
