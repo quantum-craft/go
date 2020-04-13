@@ -24,4 +24,36 @@ func TestPartition(t *testing.T) {
 	if pivotPos != 0 {
 		t.Errorf("Partition a sorted array gives wrong pivot position.")
 	}
+
+	ys := []int{7, 2, 4, 5, 3, 6, 1, 8}
+
+	pivotPos = Partition(ys, 0)
+
+	if pivotPos != 6 {
+		t.Errorf("Partition a jumbled array gives wrong pivot position.")
+	}
+
+	zs := []int{8, 7, 6, 5, 4, 3, 2, 1}
+
+	pivotPos = Partition(zs, 0)
+
+	if pivotPos != 7 {
+		t.Errorf("Partition a jumbled array gives wrong pivot position.")
+	}
+
+	zs = []int{8, 7, 6, 5, 4, 3, 2, 1}
+
+	pivotPos = Partition(zs, 3)
+
+	if pivotPos != 4 {
+		t.Errorf("Partition a jumbled array gives wrong pivot position.")
+	}
+
+	zs = []int{8, 7, 6, 5, 4, 3, 2, 1}
+
+	pivotPos = Partition(zs, 5)
+
+	if pivotPos != 2 {
+		t.Errorf("Partition a jumbled array gives wrong pivot position. 2")
+	}
 }
