@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+
+	"github.com/quantum-craft/go/utils"
 )
 
 func TestQuickSortSmall(t *testing.T) {
@@ -15,7 +17,7 @@ func TestQuickSortSmall(t *testing.T) {
 
 	QuickSort(xs)
 
-	if !sliceEqual(xs, ys) {
+	if !utils.SliceEqual(xs, ys) {
 		t.Error("QuickSort error !")
 	}
 }
@@ -42,35 +44,7 @@ func TestQuickSortLarge(t *testing.T) {
 
 	QuickSort(numbers)
 
-	if !sliceIncreasing(numbers) {
+	if !utils.SliceIncreasing(numbers) {
 		t.Error("QuickSort error !")
 	}
-}
-
-func sliceEqual(xs []int, ys []int) bool {
-	if len(xs) != len(ys) {
-		return false
-	}
-
-	for i := 0; i < len(xs); i++ {
-		if xs[i] != ys[i] {
-			return false
-		}
-	}
-
-	return true
-}
-
-func sliceIncreasing(xs []int) bool {
-	if len(xs) <= 1 {
-		return true
-	}
-
-	for i := 0; i < len(xs)-1; i++ {
-		if xs[i+1]-xs[i] != 1 {
-			return false
-		}
-	}
-
-	return true
 }

@@ -115,7 +115,7 @@ func ValueEqIndex(a []int, idx []int) (bool, int) {
 	}
 
 	if a[middleI] < idx[middleI] {
-		return ValueEqIndex(a[middleI+1:len(a)], idx[middleI+1:len(a)])
+		return ValueEqIndex(a[middleI+1:], idx[middleI+1:len(a)])
 	}
 
 	return true, idx[middleI]

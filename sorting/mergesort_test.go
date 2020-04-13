@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+
+	"github.com/quantum-craft/go/utils"
 )
 
 func TestMergeSortSmall(t *testing.T) {
@@ -15,7 +17,7 @@ func TestMergeSortSmall(t *testing.T) {
 
 	ans := MergeSort(xs)
 
-	if !sliceEqual(ans, ys) {
+	if !utils.SliceEqual(ans, ys) {
 		t.Error("MergeSort error !")
 	}
 }
@@ -42,7 +44,7 @@ func TestMergeSortLarge(t *testing.T) {
 
 	ans := MergeSort(numbers)
 
-	if !sliceIncreasing(ans) {
+	if !utils.SliceIncreasing(ans) {
 		t.Error("MergeSort error !")
 	}
 }
