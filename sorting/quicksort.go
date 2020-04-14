@@ -7,6 +7,7 @@ import (
 	"github.com/quantum-craft/go/utils"
 )
 
+// package-wise var
 var r = rand.New(rand.NewSource(time.Now().Unix()))
 
 // QuickSort sorts array in-place with randomized choices of pivot
