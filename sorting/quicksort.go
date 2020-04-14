@@ -16,9 +16,7 @@ func QuickSort(xs []int) {
 		return
 	}
 
-	pivotIdx := r.Intn(len(xs))
-
-	pivotPos := utils.Partition(xs, pivotIdx)
+	pivotPos := utils.Partition(xs, r.Intn(len(xs)))
 	QuickSort(xs[0:pivotPos])
 	QuickSort(xs[pivotPos+1:])
 }

@@ -11,9 +11,7 @@ func RSelect(xs []int, n int, i int) int {
 		return xs[0]
 	}
 
-	pivotIdx := r.Intn(n)
-
-	j := utils.Partition(xs, pivotIdx)
+	j := utils.Partition(xs, r.Intn(n))
 
 	if i == j+1 { // super lucky
 		return xs[j]
