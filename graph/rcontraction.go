@@ -15,6 +15,7 @@ type Vertex struct {
 }
 
 type Edge struct {
+	idx  int
 	head *Vertex
 	tail *Vertex
 }
@@ -46,14 +47,41 @@ func RContraction(vertices []*Vertex, edges []*Edge) (mincut int) {
 		// remove contracted edge and self-loop
 		for j := 0; j < len(contract.head.edges); j++ {
 			if contract.head.edges[j].head == contract.head.edges[j].tail {
+				// remove contracted edge from array
+				// DEBUG codes:
+				fmt.Println(contract.head.edges[j].idx)
+				fmt.Println(len(edges))
+
+				edges[contract.head.edges[j].idx] = nil
 				contract.head.edges[j] = nil
 			}
 		}
 
-		// shrink edges
-		// remove tail vertex from array
-		// remove contracted edge from array
+		j := 0
+		for j < len(contract.head.edges) {
+			if contract.head.edges[j] == nil {
+				contract.head.edges = append(contract.head.edges[0:j], contract.head.edges[j+1:]...)
+			} else {
+				j++
+			}
+		}
+
+		// shrink and rearrange indices of edges
+		j = 0
+		for j < len(edges) {
+			if edges[j] == nil {
+				edges = append(edges[0:j], edges[j+1:]...)
+			} else {
+				j++
+			}
+		}
+
+		for j := 0; j < len(edges); j++ {
+			edges[j].idx = j
+		}
 	}
+
+	fmt.Println(len(edges))
 
 	return mincut
 }
@@ -61,6 +89,14 @@ func RContraction(vertices []*Vertex, edges []*Edge) (mincut int) {
 func MakeVertex() *Vertex {
 	return &Vertex{
 		edges: make([]*Edge, 0),
+	}
+}
+
+func MakeEdge(vertices []*Vertex, headIdx int, tailIdx int, idx int) *Edge {
+	return &Edge{
+		idx:  idx,
+		head: vertices[headIdx],
+		tail: vertices[tailIdx],
 	}
 }
 
@@ -95,10 +131,7 @@ func ConstructGraph(filePath string) (vertices []*Vertex, edges []*Edge) {
 				vertices[v-1] = MakeVertex()
 			}
 
-			edge := &Edge{
-				head: vertices[v0-1],
-				tail: vertices[v-1],
-			}
+			edge := MakeEdge(vertices, v0-1, v-1, len(edges))
 			edges = append(edges, edge)
 
 			vertices[v0-1].edges = append(vertices[v0-1].edges, edge)
@@ -127,4 +160,18 @@ func CountFileLines(filePath string) (cnt int) {
 	}
 
 	return cnt
+}
+
+func idxIncreasing(xs []*Edge) bool {
+	if len(xs) <= 1 {
+		return true
+	}
+
+	for i := 0; i < len(xs)-1; i++ {
+		if xs[i+1].idx-xs[i].idx != 1 {
+			return false
+		}
+	}
+
+	return true
 }
