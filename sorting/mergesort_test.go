@@ -35,7 +35,7 @@ func TestMergeSortLarge(t *testing.T) {
 	numbers := make([]int, 0, 0)
 
 	for err == nil {
-		i, _ := strconv.Atoi(strings.TrimSuffix(line, "\r\n"))
+		i, _ := strconv.Atoi(strings.TrimSuffix(line, "\n"))
 
 		numbers = append(numbers, i)
 
