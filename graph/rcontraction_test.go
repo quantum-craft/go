@@ -1,31 +1,26 @@
 package graph
 
 import (
-	"bufio"
 	"fmt"
-	"os"
-	"strconv"
-	"strings"
 	"testing"
 )
 
+func TestRContractionInput(t *testing.T) {
+	vertices, edges := ConstructGraph("../data/kargerMinCut.txt")
+
+	if len(vertices) != 200 {
+		t.Error("RContractionInput error !")
+	}
+
+	if len(edges) != 5034 {
+		t.Error("RContractionInput error !")
+	}
+}
+
 func TestRContraction(t *testing.T) {
-	f, err := os.Open("../data/kargerMinCut.txt")
-	if err != nil {
-		fmt.Println("error opening file= ", err)
-		os.Exit(1)
-	}
+	vertices, edges := ConstructGraph("../data/kargerMinCut.txt")
 
-	rd := bufio.NewReader(f)
-	line, err := rd.ReadString('\n')
+	mincut := RContraction(vertices, edges)
 
-	numbers := make([]int, 0, 0)
-
-	for err == nil {
-		i, _ := strconv.Atoi(strings.TrimSuffix(line, "\n"))
-
-		numbers = append(numbers, i)
-
-		line, err = rd.ReadString('\n')
-	}
+	fmt.Println(mincut)
 }
