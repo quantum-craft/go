@@ -13,6 +13,8 @@ import (
 type Vertex struct {
 	idx   int
 	edges []*Edge
+	// ee182
+	pos int
 }
 
 type Edge struct {
@@ -33,6 +35,10 @@ func RContraction(vertices []Vertex, edges []Edge) (mincut int) {
 	// ee182: optimize codes
 	for i := n; i > 2; i-- {
 		remainingEdges := getRemainingEdges(edges)
+
+		// ee182
+		fmt.Println(len(remainingEdges))
+
 		contract := remainingEdges[r.Intn(len(remainingEdges))]
 
 		contract.head.edges = append(contract.head.edges, contract.tail.edges...)
