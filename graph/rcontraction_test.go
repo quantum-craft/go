@@ -7,12 +7,21 @@ import (
 
 func TestRContractionInput(t *testing.T) {
 	vertices, edges := ConstructGraph("../data/kargerMinCut.txt")
-	// ee182: fix
-	if len(vertices) != 200 {
+
+	cnt := 0
+	for i := 0; i < len(vertices); i++ {
+		if vertices[i].edges != nil {
+			cnt++
+		}
+	}
+
+	if cnt != 200 {
 		t.Error("RContractionInput error !")
 	}
 
-	if len(edges) != 5034 {
+	fmt.Println(len(edges))
+
+	if len(edges) != 2517 {
 		t.Error("RContractionInput error !")
 	}
 }
