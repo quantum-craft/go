@@ -58,14 +58,9 @@ func TestPointer2(t *testing.T) {
 	vertices := make([]Vertex, 8)
 
 	vertices[0] = MakeVertex(0)
-	vertices[0].edges = make([]*Edge, 3)
-
 	vertices[1] = MakeVertex(1)
-	vertices[1].edges = make([]*Edge, 3)
 	vertices[2] = MakeVertex(2)
-	vertices[2].edges = make([]*Edge, 3)
 	vertices[3] = MakeVertex(3)
-	vertices[3].edges = make([]*Edge, 3)
 	// vertices[4] = MakeVertex(4)
 	// vertices[5] = MakeVertex(5)
 	// vertices[6] = MakeVertex(6)
@@ -77,49 +72,37 @@ func TestPointer2(t *testing.T) {
 
 	edges[pos] = MakeEdge(vertices, 0, 1)
 
-	vertices[0].edges[vertices[0].pos] = &edges[pos]
-	vertices[0].pos++
-	vertices[1].edges[vertices[1].pos] = &edges[pos]
-	vertices[1].pos++
+	vertices[0].edges = append(vertices[0].edges, &edges[pos])
+	vertices[1].edges = append(vertices[1].edges, &edges[pos])
 	pos++
 
 	edges[pos] = MakeEdge(vertices, 0, 2)
 
-	vertices[0].edges[vertices[0].pos] = &edges[pos]
-	vertices[0].pos++
-	vertices[2].edges[vertices[2].pos] = &edges[pos]
-	vertices[2].pos++
+	vertices[0].edges = append(vertices[0].edges, &edges[pos])
+	vertices[2].edges = append(vertices[2].edges, &edges[pos])
 	pos++
 
 	edges[pos] = MakeEdge(vertices, 0, 3)
 
-	vertices[0].edges[vertices[0].pos] = &edges[pos]
-	vertices[0].pos++
-	vertices[3].edges[vertices[3].pos] = &edges[pos]
-	vertices[3].pos++
+	vertices[0].edges = append(vertices[0].edges, &edges[pos])
+	vertices[3].edges = append(vertices[3].edges, &edges[pos])
 	pos++
 
 	edges[pos] = MakeEdge(vertices, 1, 2)
 
-	vertices[1].edges[vertices[1].pos] = &edges[pos]
-	vertices[1].pos++
-	vertices[2].edges[vertices[2].pos] = &edges[pos]
-	vertices[2].pos++
+	vertices[1].edges = append(vertices[1].edges, &edges[pos])
+	vertices[2].edges = append(vertices[2].edges, &edges[pos])
 	pos++
 
 	edges[pos] = MakeEdge(vertices, 2, 3)
 
-	vertices[2].edges[vertices[2].pos] = &edges[pos]
-	vertices[2].pos++
-	vertices[3].edges[vertices[3].pos] = &edges[pos]
-	vertices[3].pos++
+	vertices[2].edges = append(vertices[2].edges, &edges[pos])
+	vertices[3].edges = append(vertices[3].edges, &edges[pos])
 	pos++
 	edges[pos] = MakeEdge(vertices, 1, 3)
 
-	vertices[1].edges[vertices[1].pos] = &edges[pos]
-	vertices[1].pos++
-	vertices[3].edges[vertices[3].pos] = &edges[pos]
-	vertices[3].pos++
+	vertices[1].edges = append(vertices[1].edges, &edges[pos])
+	vertices[3].edges = append(vertices[3].edges, &edges[pos])
 	pos++
 	r = rand.New(rand.NewSource(time.Now().Unix()))
 

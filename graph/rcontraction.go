@@ -13,8 +13,6 @@ import (
 type Vertex struct {
 	idx   int
 	edges []*Edge
-	// ee182
-	pos int
 }
 
 type Edge struct {
