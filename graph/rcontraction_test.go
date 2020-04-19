@@ -7,7 +7,7 @@ import (
 
 func TestRContractionInput(t *testing.T) {
 	vertices, edges := ConstructGraph("../data/kargerMinCut.txt")
-
+	// ee182: fix
 	if len(vertices) != 200 {
 		t.Error("RContractionInput error !")
 	}

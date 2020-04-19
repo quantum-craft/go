@@ -11,26 +11,30 @@ import (
 )
 
 type Vertex struct {
+	idx   int
 	edges []*Edge
 }
 
 type Edge struct {
-	idx  int
-	head *Vertex
-	tail *Vertex
+	contracted bool
+	head       *Vertex
+	tail       *Vertex
 }
 
 // package-wise var
 var r = rand.New(rand.NewSource(time.Now().Unix()))
 
-func RContraction(vertices []*Vertex, edges []*Edge) (mincut int) {
+func RContraction(vertices []Vertex, edges []Edge) (mincut int) {
 	// new seed in every run
 	r = rand.New(rand.NewSource(time.Now().Unix()))
 
 	n, _ := len(vertices), len(edges)
 
+	// ee182: optimize codes
 	for i := n; i > 2; i-- {
-		contract := edges[r.Intn(len(edges))]
+		remainingEdges := getRemainingEdges(edges)
+		contract := remainingEdges[r.Intn(len(remainingEdges))]
+
 		contract.head.edges = append(contract.head.edges, contract.tail.edges...)
 
 		// remove tail vertex
@@ -47,60 +51,36 @@ func RContraction(vertices []*Vertex, edges []*Edge) (mincut int) {
 		// remove contracted edge and self-loop
 		for j := 0; j < len(contract.head.edges); j++ {
 			if contract.head.edges[j].head == contract.head.edges[j].tail {
-				// remove contracted edge from array
-				// DEBUG codes:
-				fmt.Println(contract.head.edges[j].idx)
-				fmt.Println(len(edges))
-
-				edges[contract.head.edges[j].idx] = nil
+				// TODO: remove contracted edge from array
+				contract.head.edges[j].contracted = true
 				contract.head.edges[j] = nil
 			}
 		}
 
-		j := 0
-		for j < len(contract.head.edges) {
-			if contract.head.edges[j] == nil {
-				contract.head.edges = append(contract.head.edges[0:j], contract.head.edges[j+1:]...)
-			} else {
-				j++
+		newHeadEdges := make([]*Edge, 0)
+		for j := 0; j < len(contract.head.edges); j++ {
+			if contract.head.edges[j] != nil {
+				newHeadEdges = append(newHeadEdges, contract.head.edges[j])
 			}
 		}
-
-		// shrink and rearrange indices of edges
-		j = 0
-		for j < len(edges) {
-			if edges[j] == nil {
-				edges = append(edges[0:j], edges[j+1:]...)
-			} else {
-				j++
-			}
-		}
-
-		for j := 0; j < len(edges); j++ {
-			edges[j].idx = j
-		}
+		contract.head.edges = newHeadEdges
 	}
-
-	fmt.Println(len(edges))
 
 	return mincut
 }
 
-func MakeVertex() *Vertex {
-	return &Vertex{
-		edges: make([]*Edge, 0),
+func getRemainingEdges(edges []Edge) []Edge {
+	ret := make([]Edge, 0)
+	for i := 0; i < len(edges); i++ {
+		if edges[i].contracted == false {
+			ret = append(ret, edges[i])
+		}
 	}
+
+	return ret
 }
 
-func MakeEdge(vertices []*Vertex, headIdx int, tailIdx int, idx int) *Edge {
-	return &Edge{
-		idx:  idx,
-		head: vertices[headIdx],
-		tail: vertices[tailIdx],
-	}
-}
-
-func ConstructGraph(filePath string) (vertices []*Vertex, edges []*Edge) {
+func ConstructGraph(filePath string) (vertices []Vertex, edges []Edge) {
 	lineCnt := CountFileLines(filePath)
 
 	f, err := os.Open(filePath)
@@ -112,36 +92,48 @@ func ConstructGraph(filePath string) (vertices []*Vertex, edges []*Edge) {
 	rd := bufio.NewReader(f)
 	line, err := rd.ReadString('\n')
 
-	vertices = make([]*Vertex, lineCnt)
-	edges = make([]*Edge, 0)
+	vertices = make([]Vertex, lineCnt)
+	edges = make([]Edge, 0)
 
 	for err == nil {
 		adjacencyList := strings.Fields(line)
 
 		v0, _ := strconv.Atoi(adjacencyList[0])
 
-		if vertices[v0-1] == nil {
-			vertices[v0-1] = MakeVertex()
+		if vertices[v0-1].edges == nil {
+			vertices[v0-1] = MakeVertex(v0 - 1)
 		}
 
 		for i := 1; i < len(adjacencyList); i++ {
 			v, _ := strconv.Atoi(adjacencyList[i])
 
-			if vertices[v-1] == nil {
-				vertices[v-1] = MakeVertex()
+			if vertices[v-1].edges == nil {
+				vertices[v-1] = MakeVertex(v - 1)
 			}
 
-			edge := MakeEdge(vertices, v0-1, v-1, len(edges))
-			edges = append(edges, edge)
-
-			vertices[v0-1].edges = append(vertices[v0-1].edges, edge)
-			vertices[v-1].edges = append(vertices[v-1].edges, edge)
+			if !repeatedEdges(edges, v0-1, v-1) {
+				edges = append(edges, MakeEdge(vertices, v0-1, v-1))
+				vertices[v0-1].edges = append(vertices[v0-1].edges, &edges[len(edges)-1])
+				vertices[v-1].edges = append(vertices[v-1].edges, &edges[len(edges)-1])
+			}
 		}
 
 		line, err = rd.ReadString('\n')
 	}
 
 	return vertices, edges
+}
+
+func repeatedEdges(edges []Edge, headIdx int, tailIdx int) bool {
+	for j := 0; j < len(edges); j++ {
+		if edges[j].head.idx == headIdx && edges[j].tail.idx == tailIdx {
+			return true
+		} else if edges[j].tail.idx == headIdx && edges[j].head.idx == tailIdx {
+			return true
+		}
+	}
+
+	return false
 }
 
 func CountFileLines(filePath string) (cnt int) {
@@ -162,16 +154,17 @@ func CountFileLines(filePath string) (cnt int) {
 	return cnt
 }
 
-func idxIncreasing(xs []*Edge) bool {
-	if len(xs) <= 1 {
-		return true
+func MakeVertex(idx int) Vertex {
+	return Vertex{
+		idx:   idx,
+		edges: make([]*Edge, 0),
 	}
+}
 
-	for i := 0; i < len(xs)-1; i++ {
-		if xs[i+1].idx-xs[i].idx != 1 {
-			return false
-		}
+func MakeEdge(vertices []Vertex, headIdx int, tailIdx int) Edge {
+	return Edge{
+		contracted: false,
+		head:       &vertices[headIdx],
+		tail:       &vertices[tailIdx],
 	}
-
-	return true
 }
