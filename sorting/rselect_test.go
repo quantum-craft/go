@@ -4,12 +4,21 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"runtime"
 	"strconv"
 	"strings"
 	"testing"
 )
 
 func TestRSelect(t *testing.T) {
+	lineEnding := "\n"
+
+	if runtime.GOOS == "windows" {
+		lineEnding = "\r\n"
+	} else {
+		lineEnding = "\n"
+	}
+
 	xs := []int{8, 7, 6, 5, 4, 3, 2, 1}
 
 	if RSelect(xs, len(xs), 1) != 1 {
@@ -64,7 +73,7 @@ func TestRSelect(t *testing.T) {
 	numbers := make([]int, 0, 0)
 
 	for err == nil {
-		i, _ := strconv.Atoi(strings.TrimSuffix(line, "\n"))
+		i, _ := strconv.Atoi(strings.TrimSuffix(line, lineEnding))
 
 		numbers = append(numbers, i)
 

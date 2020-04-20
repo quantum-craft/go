@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"runtime"
 	"strconv"
 	"strings"
 	"testing"
@@ -23,6 +24,14 @@ func TestMergeSortSmall(t *testing.T) {
 }
 
 func TestMergeSortLarge(t *testing.T) {
+	lineEnding := "\n"
+
+	if runtime.GOOS == "windows" {
+		lineEnding = "\r\n"
+	} else {
+		lineEnding = "\n"
+	}
+
 	f, err := os.Open("../data/QuickSortNumbers.txt")
 	if err != nil {
 		fmt.Println("error opening file= ", err)
@@ -35,7 +44,7 @@ func TestMergeSortLarge(t *testing.T) {
 	numbers := make([]int, 0, 0)
 
 	for err == nil {
-		i, _ := strconv.Atoi(strings.TrimSuffix(line, "\n"))
+		i, _ := strconv.Atoi(strings.TrimSuffix(line, lineEnding))
 
 		numbers = append(numbers, i)
 
