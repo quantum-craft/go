@@ -10,71 +10,69 @@ import (
 	"time"
 )
 
+// Vertex is an element of V of a Graph G(V, E)
 type Vertex struct {
-	idx   int
-	edges []*Edge
+	idx        int
+	contracted bool
+	edges      []*Edge
 }
 
+// Edge is an element of E of a Graph G(V, E)
 type Edge struct {
 	contracted bool
 	head       *Vertex
 	tail       *Vertex
 }
 
-// package-wise var
-var r = rand.New(rand.NewSource(time.Now().Unix()))
+var r = rand.New(rand.NewSource(time.Now().Unix())) // package-wise var
 
-func RContraction(vertices []Vertex, edges []Edge) (mincut int) {
-	// new seed in every run
-	r = rand.New(rand.NewSource(time.Now().Unix()))
+// RContraction use Karger's randomized contraction algorithm
+// to find the min-cut of an undirected graph
+func RContraction(vertices []Vertex, edges []Edge) int {
+	r = rand.New(rand.NewSource(time.Now().Unix())) // new seed in every run
 
-	n, _ := len(vertices), len(edges)
-
-	// ee182: optimize codes
-	for i := n; i > 2; i-- {
+	for i := 0; i < len(vertices)-2; i++ {
 		remainingEdges := getRemainingEdges(edges)
+		contracted := remainingEdges[r.Intn(len(remainingEdges))]
 
-		// ee182
-		fmt.Println(len(remainingEdges))
-
-		contract := remainingEdges[r.Intn(len(remainingEdges))]
-
-		contract.head.edges = append(contract.head.edges, contract.tail.edges...)
+		contracted.head.edges = append(contracted.head.edges, contracted.tail.edges...)
 
 		// remove tail vertex
-		for j := 0; j < len(contract.head.edges); j++ {
-			if contract.head.edges[j].head == contract.tail {
-				contract.head.edges[j].head = contract.head
+		contracted.tail.contracted = true
+		for j := 0; j < len(contracted.head.edges); j++ {
+			if contracted.head.edges[j].head == contracted.tail {
+				contracted.head.edges[j].head = contracted.head
 			}
 
-			if contract.head.edges[j].tail == contract.tail {
-				contract.head.edges[j].tail = contract.head
+			if contracted.head.edges[j].tail == contracted.tail {
+				contracted.head.edges[j].tail = contracted.head
 			}
 		}
 
 		// remove contracted edge and self-loop
-		for j := 0; j < len(contract.head.edges); j++ {
-			if contract.head.edges[j].head == contract.head.edges[j].tail {
+		for j := 0; j < len(contracted.head.edges); j++ {
+			if contracted.head.edges[j].head == contracted.head.edges[j].tail {
 				// TODO: remove contracted edge from array
-				contract.head.edges[j].contracted = true
-				contract.head.edges[j] = nil
+				contracted.head.edges[j].contracted = true
+				contracted.head.edges[j] = nil
 			}
 		}
 
 		newHeadEdges := make([]*Edge, 0)
-		for j := 0; j < len(contract.head.edges); j++ {
-			if contract.head.edges[j] != nil {
-				newHeadEdges = append(newHeadEdges, contract.head.edges[j])
+		for j := 0; j < len(contracted.head.edges); j++ {
+			if contracted.head.edges[j] != nil {
+				newHeadEdges = append(newHeadEdges, contracted.head.edges[j])
 			}
 		}
-		contract.head.edges = newHeadEdges
+		contracted.head.edges = newHeadEdges
 	}
 
-	return mincut
+	return len(getRemainingEdges(edges))
 }
 
 func getRemainingEdges(edges []Edge) []Edge {
 	ret := make([]Edge, 0)
+
 	for i := 0; i < len(edges); i++ {
 		if edges[i].contracted == false {
 			ret = append(ret, edges[i])
@@ -84,8 +82,22 @@ func getRemainingEdges(edges []Edge) []Edge {
 	return ret
 }
 
-func ConstructGraph(filePath string) (vertices []Vertex, edges []Edge) {
+func getRemainingVertices(vertices []Vertex) []Vertex {
+	ret := make([]Vertex, 0)
+
+	for i := 0; i < len(vertices); i++ {
+		if vertices[i].contracted == false {
+			ret = append(ret, vertices[i])
+		}
+	}
+
+	return ret
+}
+
+// ConstructGraph will construct the adjacency list for file designated by filePath
+func ConstructGraph(filePath string) ([]Vertex, []Edge) {
 	lineCnt := CountFileLines(filePath)
+	edgeCnt := CountEdges(filePath)
 
 	f, err := os.Open(filePath)
 	if err != nil {
@@ -96,8 +108,9 @@ func ConstructGraph(filePath string) (vertices []Vertex, edges []Edge) {
 	rd := bufio.NewReader(f)
 	line, err := rd.ReadString('\n')
 
-	vertices = make([]Vertex, lineCnt)
-	edges = make([]Edge, 0)
+	vertices := make([]Vertex, lineCnt)
+	edgesSpace := make([]Edge, edgeCnt)
+	edges := edgesSpace[:0]
 
 	for err == nil {
 		adjacencyList := strings.Fields(line)
@@ -116,7 +129,9 @@ func ConstructGraph(filePath string) (vertices []Vertex, edges []Edge) {
 			}
 
 			if !repeatedEdges(edges, v0-1, v-1) {
-				edges = append(edges, MakeEdge(vertices, v0-1, v-1))
+				edges = edgesSpace[:len(edges)+1]
+				edges[len(edges)-1] = MakeEdge(vertices, v0-1, v-1)
+
 				vertices[v0-1].edges = append(vertices[v0-1].edges, &edges[len(edges)-1])
 				vertices[v-1].edges = append(vertices[v-1].edges, &edges[len(edges)-1])
 			}
@@ -140,6 +155,8 @@ func repeatedEdges(edges []Edge, headIdx int, tailIdx int) bool {
 	return false
 }
 
+// CountFileLines returns the lines of input file,
+// which is the number of vertices
 func CountFileLines(filePath string) (cnt int) {
 	f, err := os.Open(filePath)
 	if err != nil {
@@ -158,13 +175,37 @@ func CountFileLines(filePath string) (cnt int) {
 	return cnt
 }
 
+// CountEdges returns the number of edges of the input file
+func CountEdges(filePath string) (cnt int) {
+	f, err := os.Open(filePath)
+	if err != nil {
+		fmt.Println("error opening file= ", err)
+		os.Exit(1)
+	}
+
+	rd := bufio.NewReader(f)
+	line, err := rd.ReadString('\n')
+
+	cnt = 0
+	for err == nil {
+		adjacencyList := strings.Fields(line)
+		cnt += len(adjacencyList) - 1
+		line, err = rd.ReadString('\n')
+	}
+
+	return cnt / 2
+}
+
+// MakeVertex gives you a new Vertex
 func MakeVertex(idx int) Vertex {
 	return Vertex{
-		idx:   idx,
-		edges: make([]*Edge, 0),
+		idx:        idx,
+		contracted: false,
+		edges:      make([]*Edge, 0),
 	}
 }
 
+// MakeEdge gives you a new Edge
 func MakeEdge(vertices []Vertex, headIdx int, tailIdx int) Edge {
 	return Edge{
 		contracted: false,
