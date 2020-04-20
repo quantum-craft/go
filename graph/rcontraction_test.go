@@ -2,7 +2,6 @@ package graph
 
 import (
 	"fmt"
-	"math"
 	"testing"
 )
 
@@ -30,15 +29,21 @@ func TestRContractionInput(t *testing.T) {
 	if len(edges) != 2517 {
 		t.Error("RContractionInput error !")
 	}
+
+	edgeCnt = CountEdges("../data/kargerMinCutSmall.txt")
+	vertexCnt := CountFileLines("../data/kargerMinCutSmall.txt")
+	fmt.Println(edgeCnt)
+	fmt.Println(vertexCnt)
 }
 
 func TestRContraction(t *testing.T) {
 	vertices, edges := ConstructGraph("../data/kargerMinCut.txt")
-	n := len(vertices)
-	lgn := int(math.Log2(float64(n)))
+	// n := len(vertices)
+	// lgn := int(math.Log2(float64(n)))
 
 	minOfMincut := 100000 // larger than 2517 :P
-	for i := 0; i < n*n*lgn; i++ {
+	// for i := 0; i < n*n*lgn; i++ {
+	for i := 0; i < 50000; i++ {
 		vertices, edges = ConstructGraph("../data/kargerMinCut.txt")
 
 		mincut := RContraction(vertices, edges)
@@ -46,10 +51,10 @@ func TestRContraction(t *testing.T) {
 		if mincut < minOfMincut {
 			minOfMincut = mincut
 		}
-
-		fmt.Println(mincut)
 	}
 
-	fmt.Print("min-cut is")
+	fmt.Print("min-cut is ")
 	fmt.Println(minOfMincut)
+
+	t.Error("TestRContraction error !")
 }
