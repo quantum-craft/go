@@ -13,12 +13,13 @@ func MakeVertex(idx int) Vertex {
 	return Vertex{
 		idx:        idx,
 		contracted: false,
+		explored:   false,
 		edges:      make([]*Edge, 0),
 	}
 }
 
 // MakeEdge gives you a new Edge
-func MakeEdge(vertices []Vertex, headIdx int, tailIdx int) Edge {
+func MakeEdge(vertices []Vertex, tailIdx int, headIdx int) Edge {
 	return Edge{
 		contracted: false,
 		head:       &vertices[headIdx],
