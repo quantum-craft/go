@@ -33,7 +33,8 @@ func (v *Vertex) GetIdx() int {
 	return v.idx
 }
 
-// GetDist returns the idx (position in the vertices array) of the Vertex
+// GetDist returns the distance from some starting vertex in the vertices array
+// Can be infinite (^uint64(0)) if the starting vertex has not been assigned
 func (v *Vertex) GetDist() uint64 {
 	return v.dist
 }
