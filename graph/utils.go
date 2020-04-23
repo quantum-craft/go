@@ -14,6 +14,7 @@ func MakeVertex(idx int) Vertex {
 		idx:        idx,
 		contracted: false,
 		explored:   false,
+		dist:       ^uint64(0), // infinite
 		edges:      make([]*Edge, 0),
 	}
 }

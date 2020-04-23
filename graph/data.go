@@ -4,6 +4,7 @@ package graph
 type IVertex interface {
 	GetEdges() []*Edge
 	GetIdx() int
+	GetDist() uint64
 }
 
 // Vertex is an element of V of a Graph G(V, E)
@@ -11,6 +12,7 @@ type Vertex struct {
 	idx        int
 	contracted bool
 	explored   bool
+	dist       uint64
 	edges      []*Edge
 }
 
@@ -29,4 +31,9 @@ func (v *Vertex) GetEdges() []*Edge {
 // GetIdx returns the idx (position in the vertices array) of the Vertex
 func (v *Vertex) GetIdx() int {
 	return v.idx
+}
+
+// GetDist returns the idx (position in the vertices array) of the Vertex
+func (v *Vertex) GetDist() uint64 {
+	return v.dist
 }
