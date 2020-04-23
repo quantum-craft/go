@@ -1,10 +1,10 @@
 package graph
 
 // BFS is the template of breadth-first-search
-func BFS(start *Vertex) {
+func BFS(vertices []Vertex, edges []Edge, startIdx int) {
 	queue := NewList()
 
-	exploredAndQueued(start, queue)
+	exploredAndQueued(&vertices[startIdx], queue)
 
 	for v := queue.Front(); v != nil; v = queue.Front() {
 		for i, neighbors := 0, v.Value.GetEdges(); i < len(neighbors); i++ {
@@ -24,9 +24,10 @@ func BFS(start *Vertex) {
 }
 
 // BFSShortestPath uses breadth-first-search to find the shortest path from start to end
-func BFSShortestPath(start *Vertex, end *Vertex) uint64 {
+func BFSShortestPath(vertices []Vertex, edges []Edge, startIdx int, endIdx int) uint64 {
 	queue := NewList()
 
+	start, end := &vertices[startIdx], &vertices[endIdx]
 	start.dist = 0
 
 	if start == end {
@@ -64,6 +65,19 @@ func BFSShortestPath(start *Vertex, end *Vertex) uint64 {
 	}
 
 	return ^uint64(0) // infinite, can not find the end vertex
+}
+
+// BFSConnectivity gives you the clusters (unconnected pieces) of the given graph
+func BFSConnectivity(vertices []Vertex, edges []Edge) int {
+	clusterCnt := 0
+	for i := 0; i < len(vertices); i++ {
+		if vertices[i].explored == false {
+			BFS(vertices, edges, i)
+			clusterCnt++
+		}
+	}
+
+	return clusterCnt
 }
 
 func exploredAndQueued(v *Vertex, queue *List) {
