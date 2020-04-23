@@ -23,7 +23,7 @@ func BFS(start *Vertex) {
 	}
 }
 
-// BFSShortestPath use breadth-first-search to find the shortest path from start to end
+// BFSShortestPath uses breadth-first-search to find the shortest path from start to end
 func BFSShortestPath(start *Vertex, end *Vertex) uint64 {
 	queue := NewList()
 
