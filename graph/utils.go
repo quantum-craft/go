@@ -129,3 +129,25 @@ func CountEdges(filePath string) (cnt int) {
 
 	return cnt / 2
 }
+
+// CheckAllUnexplored checks whether the vertices are all unexplored
+func CheckAllUnexplored(vertices []Vertex) bool {
+	for i := 0; i < len(vertices); i++ {
+		if vertices[i].explored == true {
+			return false
+		}
+	}
+
+	return true
+}
+
+// CheckAllExplored checks whether the vertices are all explored
+func CheckAllExplored(vertices []Vertex) bool {
+	for i := 0; i < len(vertices); i++ {
+		if vertices[i].explored == false {
+			return false
+		}
+	}
+
+	return true
+}
