@@ -16,6 +16,8 @@ func MakeVertex(idx int) Vertex {
 		explored:         false,
 		dist:             ^uint64(0), // infinite
 		topologicalOrder: -1,         // impossible order
+		finishingTime:    -1,         // impossible order
+		leader:           -1,         // impossible index
 		edges:            make([]*Edge, 0),
 	}
 }

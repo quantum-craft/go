@@ -14,6 +14,8 @@ type Vertex struct {
 	explored         bool
 	dist             uint64
 	topologicalOrder int
+	finishingTime    int
+	leader           int
 	edges            []*Edge
 }
 

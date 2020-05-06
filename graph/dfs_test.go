@@ -4,6 +4,48 @@ import (
 	"testing"
 )
 
+func TestKosaraju(t *testing.T) {
+	vertices, edges := ConstructGraphDirected("../data/KosarajuTestSmall.txt")
+
+	Kosaraju(vertices, edges)
+
+	if vertices[0].leader != 6 {
+		t.Error("Kosaraju has error")
+	}
+
+	if vertices[3].leader != 6 {
+		t.Error("Kosaraju has error")
+	}
+
+	if vertices[6].leader != 6 {
+		t.Error("Kosaraju has error")
+	}
+
+	if vertices[1].leader != 7 {
+		t.Error("Kosaraju has error")
+	}
+
+	if vertices[4].leader != 7 {
+		t.Error("Kosaraju has error")
+	}
+
+	if vertices[7].leader != 7 {
+		t.Error("Kosaraju has error")
+	}
+
+	if vertices[2].leader != 8 {
+		t.Error("Kosaraju has error")
+	}
+
+	if vertices[5].leader != 8 {
+		t.Error("Kosaraju has error")
+	}
+
+	if vertices[8].leader != 8 {
+		t.Error("Kosaraju has error")
+	}
+}
+
 func TestDFSDirected(t *testing.T) {
 	vertices, edges := ConstructGraphDirected("../data/DFSDirectedTest1.txt")
 
