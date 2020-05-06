@@ -1,86 +1,155 @@
 package graph
 
-import "testing"
+import (
+	"testing"
+)
 
-func TestDFS(t *testing.T) {
+func TestDFSDirected(t *testing.T) {
+	vertices, edges := ConstructGraphDirected("../data/DFSDirectedTest1.txt")
+
+	if CheckAllUnexplored(vertices) != true {
+		t.Error("ConstructGraphDirected has error, not all vertices unexplored")
+	}
+	DFSDirected(vertices, edges, 0, nil)
+	if CheckAllExplored(vertices) != true {
+		t.Error("DFSDirected has error, not all vertices explored")
+	}
+
+	vertices, edges = ConstructGraphDirected("../data/DFSDirectedTest1.txt")
+	n := len(vertices)
+	DFSDirected(vertices, edges, 0, &n)
+
+	if CheckAllExplored(vertices) != true {
+		t.Error("DFSDirected has error, not all vertices explored")
+	}
+
+	vertices, edges = ConstructGraphDirected("../data/DFSDirectedTest1.txt")
+	TopologicalSort(vertices, edges)
+	if CheckAllExplored(vertices) != true {
+		t.Error("TopologicalSort has error, not all vertices explored")
+	}
+
+	if vertices[0].topologicalOrder != 1 {
+		t.Error("TopologicalSort has error, v0's order should be 1")
+	}
+
+	if vertices[1].topologicalOrder != 3 {
+		t.Error("TopologicalSort has error, v1's order should be 3")
+	}
+
+	if vertices[2].topologicalOrder != 2 {
+		t.Error("TopologicalSort has error, v2's order should be 2")
+	}
+
+	if vertices[3].topologicalOrder != 4 {
+		t.Error("TopologicalSort has error, v3's order should be 4")
+	}
+
+	vertices, edges = ConstructGraphDirected("../data/DFSDirectedTest1.txt")
+	n = len(vertices)
+	DFSDirected(vertices, edges, 2, &n)
+	DFSDirected(vertices, edges, 0, &n)
+
+	if CheckAllExplored(vertices) != true {
+		t.Error("DFSDirected has error, not all vertices explored")
+	}
+
+	if vertices[0].topologicalOrder != 1 {
+		t.Error("TopologicalSort has error, v0's order should be 1")
+	}
+
+	if vertices[1].topologicalOrder != 2 {
+		t.Error("TopologicalSort has error, v1's order should be 2")
+	}
+
+	if vertices[2].topologicalOrder != 3 {
+		t.Error("TopologicalSort has error, v2's order should be 3")
+	}
+
+	if vertices[3].topologicalOrder != 4 {
+		t.Error("TopologicalSort has error, v3's order should be 4")
+	}
+}
+
+func TestDFSUndirected(t *testing.T) {
 	vertices, edges := ConstructGraph("../data/BFSTestSmall.txt")
 	if CheckAllUnexplored(vertices) != true {
 		t.Error("ConstructGraph has error, not all vertices unexplored")
 	}
-	DFS(vertices, edges, 0)
+	DFSUndirected(vertices, edges, 0)
 	if CheckAllExplored(vertices) != true {
-		t.Error("DFS has error, not all vertices explored")
+		t.Error("DFSUndirected has error, not all vertices explored")
 	}
 
 	vertices, edges = ConstructGraph("../data/BFSTestSmall.txt")
 	if CheckAllUnexplored(vertices) != true {
 		t.Error("ConstructGraph has error, not all vertices unexplored")
 	}
-	DFS(vertices, edges, 3)
+	DFSUndirected(vertices, edges, 3)
 	if CheckAllExplored(vertices) != true {
-		t.Error("DFS has error, not all vertices explored")
+		t.Error("DFSUndirected has error, not all vertices explored")
 	}
 
 	vertices, edges = ConstructGraph("../data/BFSTestSmall.txt")
 	if CheckAllUnexplored(vertices) != true {
 		t.Error("ConstructGraph has error, not all vertices unexplored")
 	}
-	DFS(vertices, edges, 5)
+	DFSUndirected(vertices, edges, 5)
 	if CheckAllExplored(vertices) != true {
-		t.Error("DFS has error, not all vertices explored")
+		t.Error("DFSUndirected has error, not all vertices explored")
 	}
 
 	vertices, edges = ConstructGraph("../data/kargerMinCut.txt")
 	if CheckAllUnexplored(vertices) != true {
 		t.Error("ConstructGraph has error, not all vertices unexplored")
 	}
-	DFS(vertices, edges, 0)
+	DFSUndirected(vertices, edges, 0)
 	if CheckAllExplored(vertices) != true {
-		t.Error("DFS has error, not all vertices explored")
+		t.Error("DFSUndirected has error, not all vertices explored")
 	}
 
 	vertices, edges = ConstructGraph("../data/kargerMinCut.txt")
 	if CheckAllUnexplored(vertices) != true {
 		t.Error("ConstructGraph has error, not all vertices unexplored")
 	}
-	DFS(vertices, edges, 99)
+	DFSUndirected(vertices, edges, 99)
 	if CheckAllExplored(vertices) != true {
-		t.Error("DFS has error, not all vertices explored")
+		t.Error("DFSUndirected has error, not all vertices explored")
 	}
 
 	vertices, edges = ConstructGraph("../data/kargerMinCut.txt")
 	if CheckAllUnexplored(vertices) != true {
 		t.Error("ConstructGraph has error, not all vertices unexplored")
 	}
-	DFS(vertices, edges, 199)
+	DFSUndirected(vertices, edges, 199)
 	if CheckAllExplored(vertices) != true {
-		t.Error("DFS has error, not all vertices explored")
+		t.Error("DFSUndirected has error, not all vertices explored")
 	}
 
 	vertices, edges = ConstructGraph("../data/kargerMinCut.txt")
 	if CheckAllUnexplored(vertices) != true {
 		t.Error("ConstructGraph has error, not all vertices unexplored")
 	}
-	DFS(vertices, edges, 20)
+	DFSUndirected(vertices, edges, 20)
 	if CheckAllExplored(vertices) != true {
-		t.Error("DFS has error, not all vertices explored")
+		t.Error("DFSUndirected has error, not all vertices explored")
 	}
 
 	vertices, edges = ConstructGraph("../data/kargerMinCut.txt")
 	if CheckAllUnexplored(vertices) != true {
 		t.Error("ConstructGraph has error, not all vertices unexplored")
 	}
-	DFS(vertices, edges, 50)
+	DFSUndirected(vertices, edges, 50)
 	if CheckAllExplored(vertices) != true {
-		t.Error("DFS has error, not all vertices explored")
+		t.Error("DFSUndirected has error, not all vertices explored")
 	}
 
 	vertices, edges = ConstructGraph("../data/kargerMinCut.txt")
 	if CheckAllUnexplored(vertices) != true {
 		t.Error("ConstructGraph has error, not all vertices unexplored")
 	}
-	DFS(vertices, edges, 150)
+	DFSUndirected(vertices, edges, 150)
 	if CheckAllExplored(vertices) != true {
-		t.Error("DFS has error, not all vertices explored")
+		t.Error("DFSUndirected has error, not all vertices explored")
 	}
 }

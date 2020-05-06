@@ -9,11 +9,12 @@ type IVertex interface {
 
 // Vertex is an element of V of a Graph G(V, E)
 type Vertex struct {
-	idx        int
-	contracted bool
-	explored   bool
-	dist       uint64
-	edges      []*Edge
+	idx              int
+	contracted       bool
+	explored         bool
+	dist             uint64
+	topologicalOrder int
+	edges            []*Edge
 }
 
 // Edge is an element of E of a Graph G(V, E)
