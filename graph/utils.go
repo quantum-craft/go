@@ -31,6 +31,57 @@ func MakeEdge(vertices []Vertex, tailIdx int, headIdx int) Edge {
 	}
 }
 
+// ConstructGraphDirectedFromEdgesFile will construct the adjacency list for directed graph file designated by filePath
+func ConstructGraphDirectedFromEdgesFile(filePath string) ([]Vertex, []Edge) {
+	edgeCnt := CountEdgesDirected(filePath)
+
+	f, err := os.Open(filePath)
+	if err != nil {
+		fmt.Println("error opening file= ", err)
+		os.Exit(1)
+	}
+
+	rd := bufio.NewReader(f)
+	line, err := rd.ReadString('\n')
+
+	vertices := make([]Vertex, 875714)
+	edgesSpace := make([]Edge, edgeCnt)
+	edges := edgesSpace[:0]
+
+	for err == nil {
+		adjacencyList := strings.Fields(line)
+
+		v0, _ := strconv.Atoi(adjacencyList[0])
+
+		if vertices[v0-1].edges == nil {
+			vertices[v0-1] = MakeVertex(v0 - 1)
+		}
+
+		for i := 1; i < len(adjacencyList); i++ {
+			v, _ := strconv.Atoi(adjacencyList[i])
+
+			if vertices[v-1].edges == nil {
+				vertices[v-1] = MakeVertex(v - 1)
+			}
+
+			if !repeatedEdges(edges, v0-1, v-1) {
+				edges = edgesSpace[:len(edges)+1]
+				edges[len(edges)-1] = MakeEdge(vertices, v0-1, v-1)
+
+				vertices[v0-1].edges = append(vertices[v0-1].edges, &edges[len(edges)-1])
+
+				if v-1 != v0-1 {
+					vertices[v-1].edges = append(vertices[v-1].edges, &edges[len(edges)-1])
+				}
+			}
+		}
+
+		line, err = rd.ReadString('\n')
+	}
+
+	return vertices, edges
+}
+
 // ConstructGraphDirected will construct the adjacency list for directed graph file designated by filePath
 func ConstructGraphDirected(filePath string) ([]Vertex, []Edge) {
 	lineCnt := CountFileLines(filePath)
@@ -127,6 +178,16 @@ func ConstructGraph(filePath string) ([]Vertex, []Edge) {
 	}
 
 	return vertices, edges
+}
+
+func repeatedEdgesDirected(edges []Edge, headIdx int, tailIdx int) bool {
+	for j := 0; j < len(edges); j++ {
+		if edges[j].head.idx == headIdx && edges[j].tail.idx == tailIdx {
+			return true
+		}
+	}
+
+	return false
 }
 
 func repeatedEdges(edges []Edge, headIdx int, tailIdx int) bool {
