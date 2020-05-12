@@ -1,17 +1,16 @@
 package graph
 
 import (
-	"fmt"
 	"testing"
 )
 
-func TestLargeSCC(t *testing.T) {
-	vertices, edges := ConstructGraphDirectedFromEdgesFile("../data/SCC.txt")
+// func TestLargeSCC(t *testing.T) {
+// 	vertices, edges := ConstructGraphDirectedFromEdgesFile("../data/SCC.txt")
 
-	Kosaraju(vertices, edges)
+// 	Kosaraju(vertices, edges)
 
-	fmt.Println(vertices[0].leader)
-}
+// 	fmt.Println(vertices[0].leader)
+// }
 
 func TestKosaraju(t *testing.T) {
 	vertices, edges := ConstructGraphDirected("../data/KosarajuTestSmall.txt")
