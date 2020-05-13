@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"time"
 
 	"github.com/quantum-craft/go/graph"
@@ -22,7 +23,7 @@ func report(mincut *int, quitCh chan bool) {
 	}
 }
 
-func main() {
+func main2() {
 	filePath := "../data/kargerMinCut.txt"
 	vertices, edges := graph.ConstructGraph(filePath)
 
@@ -45,4 +46,12 @@ func main() {
 	fmt.Println(minOfMincut)
 
 	quitCh <- true
+}
+
+var r = rand.New(rand.NewSource(time.Now().Unix()))
+
+func main() {
+	for i := 0; i < 30; i++ {
+		fmt.Println(1 + r.Intn(15))
+	}
 }
