@@ -30,4 +30,13 @@ func TestBinarySearchTree(t *testing.T) {
 	fmt.Println(search(root, 0))
 	fmt.Println(search(root, 1))
 
+	insert(&root, 30)
+	insert(&root, 17)
+	insert(&root, 0)
+	insert(&root, 1)
+
+	fmt.Println(search(root, 30))
+	fmt.Println(search(root, 17))
+	fmt.Println(search(root, 0))
+	fmt.Println(search(root, 1))
 }
