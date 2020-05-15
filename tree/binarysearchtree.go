@@ -26,6 +26,22 @@ func print(n *node) {
 	}
 }
 
+func printPreorder(n *node) {
+	if n != nil {
+		fmt.Println(n.Value)
+		print(n.Left)
+		print(n.Right)
+	}
+}
+
+func printPostorder(n *node) {
+	if n != nil {
+		print(n.Left)
+		print(n.Right)
+		fmt.Println(n.Value)
+	}
+}
+
 func search(n *node, v int) bool {
 	if n != nil {
 		if n.Value == v {

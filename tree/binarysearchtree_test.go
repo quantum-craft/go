@@ -40,3 +40,22 @@ func TestBinarySearchTree(t *testing.T) {
 	fmt.Println(search(root, 0))
 	fmt.Println(search(root, 1))
 }
+
+func TestBinarySearchTreePrint(t *testing.T) {
+	var root *node = nil
+
+	insert(&root, 8)
+	insert(&root, 10)
+	insert(&root, 4)
+	insert(&root, 2)
+	insert(&root, 6)
+	insert(&root, 20)
+	insert(&root, 3)
+	insert(&root, 5)
+	insert(&root, 2)
+	insert(&root, -10)
+	insert(&root, -20)
+
+	print(root)
+	// printPostorder(root)
+}
