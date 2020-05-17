@@ -9,15 +9,27 @@ import (
 
 // Vertex is an element of V of a Graph G(V, E)
 type Vertex struct {
-	idx   int
-	Score int // Dijkstra's greedy score
-	Edges []*Edge
+	idx      int
+	Score    int // Dijkstra's greedy score
+	Explored bool
+	Edges    []*Edge
 }
 
 // Edge is an element of E of a Graph G(V, E)
 type Edge struct {
 	Head   *Vertex
 	Weight int
+}
+
+// Node is the node unit in min-heap for Dijkstra algorithm
+type Node struct {
+	Key *Vertex
+}
+
+// MinHeap keeps minimum Score on the top and also keeps the heap property
+type MinHeap struct {
+	lastEmpty *int // zero based
+	heap      *[]Node
 }
 
 // Dijkstra computes shortest path from startIdx to all other reachable nodes
@@ -32,6 +44,19 @@ func Dijkstra(vertices []Vertex, edges []Edge, startIdx int) {
 	vertices[startIdx].Score = 0 // source
 	Insert(minheap, Node{Key: &vertices[startIdx]})
 
+	for n := ExtractMin(minheap); n.Key != nil; n = ExtractMin(minheap) {
+		n.Key.Explored = true
+		for i, edges := 0, n.Key.Edges; i < len(n.Key.Edges); i++ {
+			if edges[i].Head.Explored == false {
+				// check whether Head exists in heap
+				// TODO: optimize
+				if !FindKeyUpdateScore(minheap, edges[i].Head, n.Key.Score+edges[i].Weight) {
+					edges[i].Head.Score = n.Key.Score + edges[i].Weight
+					Insert(minheap, Node{Key: edges[i].Head})
+				}
+			}
+		}
+	}
 }
 
 // ConstructGraph constructs the undirected, weighted graph for Dijkstra algorithm
@@ -62,12 +87,14 @@ func ConstructGraph(filePath string) ([]Vertex, []Edge) {
 			if vertices[tail].Edges == nil {
 				vertices[tail].idx = tail
 				vertices[tail].Score = 1000000 // max weight for our application
+				vertices[tail].Explored = false
 				vertices[tail].Edges = make([]*Edge, 0)
 			}
 
 			if vertices[head].Edges == nil {
 				vertices[head].idx = head
 				vertices[head].Score = 1000000 // max weight for our application
+				vertices[head].Explored = false
 				vertices[head].Edges = make([]*Edge, 0)
 			}
 
@@ -104,18 +131,7 @@ func VertexAndEdgeCountFromFile(filePath string) (int, int) {
 	return lineCnt, edgeCnt
 }
 
-// Node is node unit for Dijkstra algorithm
-type Node struct {
-	Key *Vertex
-}
-
-// MinHeap keeps minimum member on the top and keeps the heap property
-type MinHeap struct {
-	lastEmpty *int // zero based
-	heap      *[]Node
-}
-
-// Insert will insert the node at the bottom and bubble up to the proper position
+// Insert will insert the node at the bottom and BUBBLE UP to the proper position
 func Insert(minheap MinHeap, n Node) {
 	var heap *[]Node = minheap.heap
 	var lastEmpty *int = minheap.lastEmpty
@@ -135,7 +151,7 @@ func Insert(minheap MinHeap, n Node) {
 }
 
 // ExtractMin will extract the minimum member, replace the minimum pos with the last member,
-// and bubble down it to the proper position
+// and BUBBLE DOWN it to the proper position
 func ExtractMin(minheap MinHeap) Node {
 	var lastEmpty *int = minheap.lastEmpty
 
@@ -171,6 +187,28 @@ func ExtractMin(minheap MinHeap) Node {
 
 		pos = minPos
 	}
+}
+
+// FindKeyUpdateScore needs TODO: optimization
+func FindKeyUpdateScore(minheap MinHeap, key *Vertex, score int) bool {
+	var heap *[]Node = minheap.heap
+	var lastEmpty *int = minheap.lastEmpty
+
+	for j := 0; j < *lastEmpty; j++ {
+		if (*heap)[j].Key.idx == key.idx {
+			if score < (*heap)[j].Key.Score {
+				(*heap)[j].Key.Score = score
+				// pos is one based
+				// score is smaller => BUBBLE UP
+				for pos := j + 1; pos > 1 && (*heap)[pos/2-1].Key.Score >= (*heap)[pos-1].Key.Score; pos = pos / 2 {
+					swapNode(heap, pos-1, pos/2-1)
+				}
+			}
+			return true
+		}
+	}
+
+	return false
 }
 
 // pos is one based
