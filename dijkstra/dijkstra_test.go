@@ -18,20 +18,45 @@ func TestDijkstra(t *testing.T) {
 	vertices, edges := ConstructGraph(file)
 	Dijkstra(vertices, edges, 0)
 
-	fmt.Println(vertices[6].Score)   // 7
-	fmt.Println(vertices[36].Score)  // 37
-	fmt.Println(vertices[58].Score)  // 59
-	fmt.Println(vertices[81].Score)  // 82
-	fmt.Println(vertices[98].Score)  // 99
-	fmt.Println(vertices[114].Score) // 115
-	fmt.Println(vertices[132].Score) // 133
-	fmt.Println(vertices[164].Score) // 165
-	fmt.Println(vertices[187].Score) // 188
-	fmt.Println(vertices[196].Score) // 197
+	if vertices[6].Score != 2599 {
+		t.Error("Dijkstra algorithm has error !")
+	}
 
-	// for i := 0; i < len(vertices); i++ {
-	// 	fmt.Println(vertices[i].Score)
-	// }
+	if vertices[36].Score != 2610 {
+		t.Error("Dijkstra algorithm has error !")
+	}
+
+	if vertices[58].Score != 2947 {
+		t.Error("Dijkstra algorithm has error !")
+	}
+
+	if vertices[81].Score != 2052 {
+		t.Error("Dijkstra algorithm has error !")
+	}
+
+	if vertices[98].Score != 2367 {
+		t.Error("Dijkstra algorithm has error !")
+	}
+
+	if vertices[114].Score != 2399 {
+		t.Error("Dijkstra algorithm has error !")
+	}
+
+	if vertices[132].Score != 2029 {
+		t.Error("Dijkstra algorithm has error !")
+	}
+
+	if vertices[164].Score != 2442 {
+		t.Error("Dijkstra algorithm has error !")
+	}
+
+	if vertices[187].Score != 2505 {
+		t.Error("Dijkstra algorithm has error !")
+	}
+
+	if vertices[196].Score != 3068 {
+		t.Error("Dijkstra algorithm has error !")
+	}
 }
 
 func TestMinHeap(t *testing.T) {
@@ -42,17 +67,17 @@ func TestMinHeap(t *testing.T) {
 		lastEmpty: &lastEmpty,
 	}
 
-	vertex1 := &Vertex{idx: 0, Score: 88}
-	vertex2 := &Vertex{idx: 1, Score: 32}
-	vertex3 := &Vertex{idx: 2, Score: 50}
-	vertex4 := &Vertex{idx: 3, Score: 90}
-	vertex5 := &Vertex{idx: 4, Score: 23}
-	vertex6 := &Vertex{idx: 5, Score: 74}
-	vertex7 := &Vertex{idx: 6, Score: 2}
-	vertex8 := &Vertex{idx: 7, Score: 5}
-	vertex9 := &Vertex{idx: 8, Score: 91}
-	vertex10 := &Vertex{idx: 9, Score: 13}
-	vertex11 := &Vertex{idx: 10, Score: 1}
+	vertex1 := &Vertex{idx: 0, heapIdx: -1, Score: 88}
+	vertex2 := &Vertex{idx: 1, heapIdx: -1, Score: 32}
+	vertex3 := &Vertex{idx: 2, heapIdx: -1, Score: 50}
+	vertex4 := &Vertex{idx: 3, heapIdx: -1, Score: 90}
+	vertex5 := &Vertex{idx: 4, heapIdx: -1, Score: 23}
+	vertex6 := &Vertex{idx: 5, heapIdx: -1, Score: 74}
+	vertex7 := &Vertex{idx: 6, heapIdx: -1, Score: 2}
+	vertex8 := &Vertex{idx: 7, heapIdx: -1, Score: 5}
+	vertex9 := &Vertex{idx: 8, heapIdx: -1, Score: 91}
+	vertex10 := &Vertex{idx: 9, heapIdx: -1, Score: 13}
+	vertex11 := &Vertex{idx: 10, heapIdx: -1, Score: 1}
 
 	Insert(minheap, Node{Key: vertex1})
 	Insert(minheap, Node{Key: vertex2})
@@ -68,10 +93,13 @@ func TestMinHeap(t *testing.T) {
 
 	FindKeyUpdateScore(minheap, vertex8, 1)
 	FindKeyUpdateScore(minheap, vertex9, 10)
-	FindKeyUpdateScore(minheap, vertex1, 50)
+	FindKeyUpdateScore(minheap, vertex1, 20)
 	FindKeyUpdateScore(minheap, vertex11, 0)
-	FindKeyUpdateScore(minheap, vertex4, 32)
+	FindKeyUpdateScore(minheap, vertex4, 25)
 	FindKeyUpdateScore(minheap, vertex2, 16)
+	FindKeyUpdateScore(minheap, vertex10, 12)
+	FindKeyUpdateScore(minheap, vertex3, 2)
+	FindKeyUpdateScore(minheap, vertex6, 21)
 
 	for n := ExtractMin(minheap); n.Key != nil; n = ExtractMin(minheap) {
 		fmt.Println(n.Key.Score)

@@ -10,6 +10,7 @@ import (
 // Vertex is an element of V of a Graph G(V, E)
 type Vertex struct {
 	idx      int
+	heapIdx  int
 	Score    int // Dijkstra's greedy score
 	Explored bool
 	Edges    []*Edge
@@ -49,7 +50,6 @@ func Dijkstra(vertices []Vertex, edges []Edge, startIdx int) {
 		for i, edges := 0, n.Key.Edges; i < len(n.Key.Edges); i++ {
 			if edges[i].Head.Explored == false {
 				// check whether Head exists in heap
-				// TODO: optimize
 				if !FindKeyUpdateScore(minheap, edges[i].Head, n.Key.Score+edges[i].Weight) {
 					edges[i].Head.Score = n.Key.Score + edges[i].Weight
 					Insert(minheap, Node{Key: edges[i].Head})
@@ -86,6 +86,7 @@ func ConstructGraph(filePath string) ([]Vertex, []Edge) {
 
 			if vertices[tail].Edges == nil {
 				vertices[tail].idx = tail
+				vertices[tail].heapIdx = -1    // not in heap yet
 				vertices[tail].Score = 1000000 // max weight for our application
 				vertices[tail].Explored = false
 				vertices[tail].Edges = make([]*Edge, 0)
@@ -93,6 +94,7 @@ func ConstructGraph(filePath string) ([]Vertex, []Edge) {
 
 			if vertices[head].Edges == nil {
 				vertices[head].idx = head
+				vertices[head].heapIdx = -1    // not in heap yet
 				vertices[head].Score = 1000000 // max weight for our application
 				vertices[head].Explored = false
 				vertices[head].Edges = make([]*Edge, 0)
@@ -144,6 +146,7 @@ func Insert(minheap MinHeap, n Node) {
 		*lastEmpty++
 	}
 
+	swapNode(heap, *lastEmpty-1, *lastEmpty-1)
 	// pos is one based
 	for pos := *lastEmpty; pos > 1 && (*heap)[pos/2-1].Key.Score >= (*heap)[pos-1].Key.Score; pos = pos / 2 {
 		swapNode(heap, pos-1, pos/2-1)
@@ -163,8 +166,8 @@ func ExtractMin(minheap MinHeap) Node {
 	var ret Node = (*heap)[0]
 
 	*lastEmpty--
-	swapNode(heap, 0, *lastEmpty)
 
+	swapNode(heap, 0, *lastEmpty)
 	// pos is one based
 	pos := 1
 	for {
@@ -189,23 +192,20 @@ func ExtractMin(minheap MinHeap) Node {
 	}
 }
 
-// FindKeyUpdateScore needs TODO: optimization
+// FindKeyUpdateScore will find the vertex in the heap and update score if it is smaller
 func FindKeyUpdateScore(minheap MinHeap, key *Vertex, score int) bool {
 	var heap *[]Node = minheap.heap
-	var lastEmpty *int = minheap.lastEmpty
 
-	for j := 0; j < *lastEmpty; j++ {
-		if (*heap)[j].Key.idx == key.idx {
-			if score < (*heap)[j].Key.Score {
-				(*heap)[j].Key.Score = score
-				// pos is one based
-				// score is smaller => BUBBLE UP
-				for pos := j + 1; pos > 1 && (*heap)[pos/2-1].Key.Score >= (*heap)[pos-1].Key.Score; pos = pos / 2 {
-					swapNode(heap, pos-1, pos/2-1)
-				}
+	if key.heapIdx >= 0 && (*heap)[key.heapIdx].Key.idx == key.idx {
+		if score < (*heap)[key.heapIdx].Key.Score {
+			(*heap)[key.heapIdx].Key.Score = score
+			// pos is one based
+			// score is smaller => BUBBLE UP
+			for pos := key.heapIdx + 1; pos > 1 && (*heap)[pos/2-1].Key.Score >= (*heap)[pos-1].Key.Score; pos = pos / 2 {
+				swapNode(heap, pos-1, pos/2-1)
 			}
-			return true
 		}
+		return true
 	}
 
 	return false
@@ -242,7 +242,7 @@ func findMinScorePos3(heap *[]Node, pos1 int, pos2 int, pos3 int) int {
 }
 
 func swapNode(heap *[]Node, this int, that int) {
-	n := (*heap)[this]
-	(*heap)[this] = (*heap)[that]
-	(*heap)[that] = n
+	(*heap)[this], (*heap)[that] = (*heap)[that], (*heap)[this]
+	(*heap)[this].Key.heapIdx = this
+	(*heap)[that].Key.heapIdx = that
 }
