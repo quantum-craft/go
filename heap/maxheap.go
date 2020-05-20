@@ -28,6 +28,12 @@ func InsertMaxheap(maxheap MaxHeap, n int) {
 
 // GetMax gives you the maximum member without extracting it
 func GetMax(maxheap MaxHeap) int {
+	var lastEmpty *int = maxheap.lastEmpty
+
+	if *lastEmpty == 0 {
+		return MaxInt
+	}
+
 	var heap *[]int = maxheap.heap
 	return (*heap)[0]
 }
@@ -38,7 +44,7 @@ func ExtractMax(maxheap MaxHeap) int {
 	var lastEmpty *int = maxheap.lastEmpty
 
 	if *lastEmpty == 0 {
-		return MinInt // ExtractMax and get MinInt => wrong
+		return MaxInt
 	}
 
 	var heap *[]int = maxheap.heap

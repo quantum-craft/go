@@ -7,9 +7,9 @@ type MinHeap struct {
 }
 
 // MaxUint is the max uint
-const MaxUint = ^int(0) // 11111111
+const MaxUint = ^uint(0) // 11111111
 // MinUint is the min uint
-const MinUint = int(0) // 00000000
+const MinUint = uint(0) // 00000000
 // MaxInt it the max int
 const MaxInt = int(MaxUint >> 1) // 01111111
 // MinInt is the min int
@@ -37,6 +37,12 @@ func InsertMinheap(minheap MinHeap, n int) {
 
 // GetMin gives you the minimum member without extracting it
 func GetMin(minheap MinHeap) int {
+	var lastEmpty *int = minheap.lastEmpty
+
+	if *lastEmpty == 0 {
+		return MinInt
+	}
+
 	var heap *[]int = minheap.heap
 	return (*heap)[0]
 }
@@ -47,7 +53,7 @@ func ExtractMin(minheap MinHeap) int {
 	var lastEmpty *int = minheap.lastEmpty
 
 	if *lastEmpty == 0 {
-		return MaxInt // ExtractMin and get MaxInt => wrong
+		return MinInt
 	}
 
 	var heap *[]int = minheap.heap
