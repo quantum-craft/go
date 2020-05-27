@@ -190,3 +190,68 @@ func TestMedianMaintenance(t *testing.T) {
 		t.Error("MedianMaintenance average error !")
 	}
 }
+
+// func TestRanged2Sum(t *testing.T) {
+// 	f, _ := os.Open("../data/Ranged2Sum.txt")
+// 	defer f.Close()
+
+// 	scanner := bufio.NewScanner(f)
+// 	array := make([]int, 0, 0)
+// 	for scanner.Scan() {
+// 		line := scanner.Text()
+// 		x, _ := strconv.Atoi(line)
+// 		array = append(array, x)
+// 	}
+
+// 	total := 0
+// 	keeper := make(map[int]int)
+// 	tKeeper := make(map[int]bool)
+// 	for i := 0; i < len(array); i++ {
+// 		x := array[i]
+
+// 		for k := range keeper {
+// 			if x != k && k >= -10000-x && k < 10000-x {
+// 				_, exist := tKeeper[x+k]
+// 				if !exist {
+// 					tKeeper[x+k] = true
+// 					total++
+// 				}
+// 			}
+// 		}
+
+// 		keeper[x] = i
+// 	}
+
+// 	fmt.Println(total)
+// }
+
+func TestRanged2Sum(t *testing.T) {
+	f, _ := os.Open("../data/Ranged2Sum.txt")
+	defer f.Close()
+
+	scanner := bufio.NewScanner(f)
+	array := make([]int, 0, 0)
+	for scanner.Scan() {
+		line := scanner.Text()
+		x, _ := strconv.Atoi(line)
+		array = append(array, x)
+	}
+
+	tKeeper := make(map[int]bool)
+	total := 0
+	for i := 0; i < len(array); i++ {
+		for j := i + 1; j < len(array); j++ {
+			if array[i] != array[j] {
+				if array[i]+array[j] <= 10000 && array[i]+array[j] >= -10000 {
+					_, exist := tKeeper[array[i]+array[j]]
+					if !exist {
+						tKeeper[array[i]+array[j]] = true
+						total++
+					}
+				}
+			}
+		}
+	}
+
+	fmt.Println(total)
+}
