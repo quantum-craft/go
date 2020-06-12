@@ -1,0 +1,5 @@
+package primmst
+
+func testPrim() {
+
+}

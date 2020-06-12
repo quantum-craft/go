@@ -33,6 +33,11 @@ type MinHeap struct {
 	heap      *[]Node
 }
 
+const maxUint = ^uint(0)         // 1111...1
+const minUint = uint(0)          // 0000...0
+const maxInt = int(maxUint >> 1) // 0111...1
+const minInt = -maxInt - 1       // 1000...0
+
 // Dijkstra computes shortest path from startIdx to all other reachable nodes
 func Dijkstra(vertices []Vertex, edges []Edge, startIdx int) {
 	heap := make([]Node, 0, 0)
@@ -86,16 +91,16 @@ func ConstructGraph(filePath string) ([]Vertex, []Edge) {
 
 			if vertices[tail].Edges == nil {
 				vertices[tail].idx = tail
-				vertices[tail].heapIdx = -1    // not in heap yet
-				vertices[tail].Score = 1000000 // max weight for our application
+				vertices[tail].heapIdx = -1 // not in heap yet
+				vertices[tail].Score = maxInt
 				vertices[tail].Explored = false
 				vertices[tail].Edges = make([]*Edge, 0)
 			}
 
 			if vertices[head].Edges == nil {
 				vertices[head].idx = head
-				vertices[head].heapIdx = -1    // not in heap yet
-				vertices[head].Score = 1000000 // max weight for our application
+				vertices[head].heapIdx = -1 // not in heap yet
+				vertices[head].Score = maxInt
 				vertices[head].Explored = false
 				vertices[head].Edges = make([]*Edge, 0)
 			}
@@ -213,32 +218,16 @@ func FindKeyUpdateScore(minheap MinHeap, key *Vertex, score int) bool {
 
 // pos is one based
 func findMinScorePos2(heap *[]Node, pos1 int, pos2 int) int {
-	minPos := -1
-
 	if (*heap)[pos1-1].Key.Score < (*heap)[pos2-1].Key.Score {
-		minPos = pos1
-	} else {
-		minPos = pos2
+		return pos1
 	}
 
-	return minPos
+	return pos2
 }
 
 // pos is one based
 func findMinScorePos3(heap *[]Node, pos1 int, pos2 int, pos3 int) int {
-	minPos := -1
-
-	if (*heap)[pos1-1].Key.Score < (*heap)[pos2-1].Key.Score {
-		minPos = pos1
-	} else {
-		minPos = pos2
-	}
-
-	if (*heap)[pos3-1].Key.Score < (*heap)[minPos-1].Key.Score {
-		minPos = pos3
-	}
-
-	return minPos
+	return findMinScorePos2(heap, findMinScorePos2(heap, pos1, pos2), pos3)
 }
 
 func swapNode(heap *[]Node, this int, that int) {
