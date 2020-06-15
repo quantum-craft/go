@@ -2,7 +2,6 @@ package primmst
 
 import (
 	"bufio"
-	"fmt"
 	"math/rand"
 	"os"
 	"strconv"
@@ -94,8 +93,8 @@ func TestPrimMST(t *testing.T) {
 	defer f.Close()
 
 	var numVertices, numEdges int
-	var Vertices []Vertex
-	var Edges []Edge
+	var vertices []Vertex
+	var edges []Edge
 
 	k := 0
 	scanner := bufio.NewScanner(f)
@@ -107,23 +106,27 @@ func TestPrimMST(t *testing.T) {
 			numVertices, _ = strconv.Atoi(fields[0])
 			numEdges, _ = strconv.Atoi(fields[1])
 
-			Vertices = make([]Vertex, numVertices)
-			Edges = make([]Edge, numEdges)
+			vertices = make([]Vertex, numVertices)
+			edges = make([]Edge, numEdges)
 		} else {
 			vidx1, _ := strconv.Atoi(fields[0])
 			vidx2, _ := strconv.Atoi(fields[1])
 			cost, _ := strconv.Atoi(fields[2])
 
-			Edges[k].VertIdx[0] = vidx1
-			Edges[k].VertIdx[1] = vidx2
-			Edges[k].Cost = cost
+			vidx1, vidx2 = vidx1-1, vidx2-1 // convert to zero based
+
+			edges[k].VertIdx[0] = vidx1
+			edges[k].VertIdx[1] = vidx2
+			edges[k].Cost = cost
+
+			vertices[vidx1].HeapIdx = -1 // not in heap yet
+			vertices[vidx2].HeapIdx = -1 // not in heap yet
 
 			k++
 		}
 	}
 
-	fmt.Println(Vertices[len(Vertices)-1])
-	fmt.Println(Edges[len(Edges)-1])
+	PrimMST(vertices, edges)
 }
 
 var r = rand.New(rand.NewSource(time.Now().Unix()))

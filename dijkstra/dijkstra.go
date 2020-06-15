@@ -140,8 +140,7 @@ func VertexAndEdgeCountFromFile(filePath string) (int, int) {
 
 // Insert will insert the node at the bottom and re-heapify
 func Insert(minheap MinHeap, n Node) {
-	var heap *[]Node = minheap.heap
-	var lastEmpty *int = minheap.lastEmpty
+	lastEmpty, heap := minheap.lastEmpty, minheap.heap
 
 	if *lastEmpty == len(*heap) {
 		*heap = append(*heap, n)
@@ -204,11 +203,10 @@ func ExtractMin(minheap MinHeap) Node {
 		return Node{Key: nil}
 	}
 
-	var heap *[]Node = minheap.heap
-	var ret Node = (*heap)[0]
+	heap := minheap.heap
+	ret := (*heap)[0]
 
 	*lastEmpty--
-
 	swapNode(heap, 0, *lastEmpty)
 
 	bubbleDown(1, minheap)
