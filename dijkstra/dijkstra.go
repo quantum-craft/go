@@ -29,7 +29,7 @@ type Node struct {
 
 // MinHeap keeps minimum Score on the top and also keeps the heap property
 type MinHeap struct {
-	lastEmpty *int // zero based
+	lastEmpty *int
 	heap      *[]Node
 }
 
@@ -138,7 +138,7 @@ func VertexAndEdgeCountFromFile(filePath string) (int, int) {
 	return lineCnt, edgeCnt
 }
 
-// Insert will insert the node at the bottom and BUBBLE UP to the proper position
+// Insert will insert the node at the bottom and re-heapify
 func Insert(minheap MinHeap, n Node) {
 	var heap *[]Node = minheap.heap
 	var lastEmpty *int = minheap.lastEmpty
@@ -152,14 +152,51 @@ func Insert(minheap MinHeap, n Node) {
 	}
 
 	swapNode(heap, *lastEmpty-1, *lastEmpty-1)
-	// pos is one based
-	for pos := *lastEmpty; pos > 1 && (*heap)[pos/2-1].Key.Score >= (*heap)[pos-1].Key.Score; pos = pos / 2 {
-		swapNode(heap, pos-1, pos/2-1)
+
+	bubbleUp(*lastEmpty, heap)
+}
+
+// pos is one based index
+func bubbleUp(pos int, heap *[]Node) {
+	for p := pos; p > 1 && (*heap)[p/2-1].Key.Score >= (*heap)[p-1].Key.Score; p = p / 2 {
+		swapNode(heap, p-1, p/2-1)
 	}
 }
 
+// pos is one based index
+func bubbleDown(pos int, minheap MinHeap) {
+	lastEmpty, heap := minheap.lastEmpty, minheap.heap
+
+	p := pos
+	for {
+		if p-1 >= *lastEmpty || p*2-1 >= *lastEmpty {
+			return
+		}
+
+		here := downHere(p, minheap)
+
+		if here == p {
+			return
+		}
+
+		swapNode(heap, p-1, here-1)
+
+		p = here
+	}
+}
+
+func downHere(p int, minheap MinHeap) int {
+	lastEmpty, heap := minheap.lastEmpty, minheap.heap
+
+	if p*2 >= *lastEmpty {
+		return findMinScorePos2(heap, p, p*2)
+	}
+
+	return findMinScorePos3(heap, p, p*2, p*2+1)
+}
+
 // ExtractMin will extract the minimum member, replace the minimum pos with the last member,
-// and BUBBLE DOWN it to the proper position
+// and re-heapify
 func ExtractMin(minheap MinHeap) Node {
 	var lastEmpty *int = minheap.lastEmpty
 
@@ -173,28 +210,10 @@ func ExtractMin(minheap MinHeap) Node {
 	*lastEmpty--
 
 	swapNode(heap, 0, *lastEmpty)
-	// pos is one based
-	pos := 1
-	for {
-		if pos-1 >= *lastEmpty || pos*2-1 >= *lastEmpty {
-			return ret
-		}
 
-		minPos := -1
-		if pos*2 >= *lastEmpty {
-			minPos = findMinScorePos2(heap, pos, pos*2)
-		} else {
-			minPos = findMinScorePos3(heap, pos, pos*2, pos*2+1)
-		}
+	bubbleDown(1, minheap)
 
-		if minPos == pos {
-			return ret
-		}
-
-		swapNode(heap, pos-1, minPos-1)
-
-		pos = minPos
-	}
+	return ret
 }
 
 // FindKeyUpdateScore will find the vertex in the heap and update score if it is smaller
@@ -204,12 +223,11 @@ func FindKeyUpdateScore(minheap MinHeap, key *Vertex, score int) bool {
 	if key.heapIdx >= 0 && (*heap)[key.heapIdx].Key.idx == key.idx {
 		if score < (*heap)[key.heapIdx].Key.Score {
 			(*heap)[key.heapIdx].Key.Score = score
-			// pos is one based
-			// score is smaller => BUBBLE UP
-			for pos := key.heapIdx + 1; pos > 1 && (*heap)[pos/2-1].Key.Score >= (*heap)[pos-1].Key.Score; pos = pos / 2 {
-				swapNode(heap, pos-1, pos/2-1)
-			}
+
+			// new score is smaller, re-heapify
+			bubbleUp(key.heapIdx+1, heap)
 		}
+
 		return true
 	}
 
