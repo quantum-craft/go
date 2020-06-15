@@ -18,14 +18,6 @@ type Edge struct {
 	Cost    int
 }
 
-func haveVert(edge *Edge, vidx int) bool {
-	if edge.VertIdx[0] == vidx || edge.VertIdx[1] == vidx {
-		return true
-	}
-
-	return false
-}
-
 func otherVert(edge *Edge, vidx int) int {
 	if edge.VertIdx[0] == vidx {
 		return edge.VertIdx[1]
@@ -44,14 +36,17 @@ func PrimMST(vertices []Vertex, edges []Edge, startIdx int) int {
 			continue
 		}
 
-		minCost, vEdges := maxInt, vertices[i].Edges
-		for j := 0; j < len(vEdges); j++ {
-			if haveVert(vEdges[j], startIdx) && vEdges[j].Cost < minCost {
-				minCost = vEdges[j].Cost
-			}
-		}
+		insert(minheap, heapNode{vert: &vertices[i], minCost: maxInt})
+	}
 
-		insert(minheap, heapNode{vert: &vertices[i], minCost: minCost})
+	v := vertices[startIdx]
+	for j := 0; j < len(v.Edges); j++ {
+		e := v.Edges[j]
+		h := vertices[otherVert(e, v.VIdx)].HeapIdx
+
+		if h != -1 {
+			update(minheap, h, e.Cost)
+		}
 	}
 
 	for n := extractMin(minheap); n.vert != nil; n = extractMin(minheap) {
