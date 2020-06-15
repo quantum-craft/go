@@ -1,7 +1,5 @@
 package primmst
 
-import "fmt"
-
 const maxUint = ^uint(0)         // 1111...1
 const minUint = uint(0)          // 0000...0
 const maxInt = int(maxUint >> 1) // 0111...1
@@ -9,7 +7,9 @@ const minInt = -maxInt - 1       // 1000...0
 
 // Vertex is used for undirected graph in Prim's mst algorithm
 type Vertex struct {
+	VIdx    int
 	HeapIdx int
+	Edges   []*Edge
 }
 
 // Edge is used for undirected graph in Prim's mst algorithm
@@ -18,41 +18,55 @@ type Edge struct {
 	Cost    int
 }
 
-// PrimMST using Prim's minimum spanning tree algorithm to find mst cost
-func PrimMST(vertices []Vertex, edges []Edge) int {
-	heap := make([]heapNode, 0, 0)
-	lastEmpty := 0
-	minheap := minHeap{
-		heap:      &heap,
-		lastEmpty: &lastEmpty,
+func haveVert(edge *Edge, vidx int) bool {
+	if edge.VertIdx[0] == vidx || edge.VertIdx[1] == vidx {
+		return true
 	}
 
-	insert(minheap, heapNode{vert: &vertices[0], minCost: edges[0].Cost})
-	insert(minheap, heapNode{vert: &vertices[1], minCost: edges[1].Cost})
-	insert(minheap, heapNode{vert: &vertices[2], minCost: edges[2].Cost})
-	insert(minheap, heapNode{vert: &vertices[3], minCost: edges[3].Cost})
-	insert(minheap, heapNode{vert: &vertices[4], minCost: edges[4].Cost})
+	return false
+}
 
-	n := extractMin(minheap)
-	fmt.Println(n.minCost)
-	fmt.Println(n.vert)
-	n = extractMin(minheap)
-	fmt.Println(n.minCost)
-	fmt.Println(n.vert)
-	n = extractMin(minheap)
-	fmt.Println(n.minCost)
-	fmt.Println(n.vert)
-	n = extractMin(minheap)
-	fmt.Println(n.minCost)
-	fmt.Println(n.vert)
-	n = extractMin(minheap)
-	fmt.Println(n.minCost)
-	fmt.Println(n.vert)
-	n = extractMin(minheap)
-	fmt.Println(n.minCost)
-	fmt.Println(n.vert)
+func otherVert(edge *Edge, vidx int) int {
+	if edge.VertIdx[0] == vidx {
+		return edge.VertIdx[1]
+	}
 
-	return 0
+	return edge.VertIdx[0]
+}
+
+// PrimMST using Prim's minimum spanning tree algorithm to find mst cost
+func PrimMST(vertices []Vertex, edges []Edge, startIdx int) int {
+	mstcost := 0
+
+	minheap := initHeap()
+	for i := 0; i < len(vertices); i++ {
+		if i == startIdx {
+			continue
+		}
+
+		minCost, vEdges := maxInt, vertices[i].Edges
+		for j := 0; j < len(vEdges); j++ {
+			if haveVert(vEdges[j], startIdx) && vEdges[j].Cost < minCost {
+				minCost = vEdges[j].Cost
+			}
+		}
+
+		insert(minheap, heapNode{vert: &vertices[i], minCost: minCost})
+	}
+
+	for n := extractMin(minheap); n.vert != nil; n = extractMin(minheap) {
+		mstcost += n.minCost
+
+		for j, v := 0, n.vert; j < len(v.Edges); j++ {
+			e := v.Edges[j]
+			h := vertices[otherVert(e, v.VIdx)].HeapIdx
+			if h != -1 {
+				update(minheap, h, e.Cost)
+			}
+		}
+	}
+
+	return mstcost
 }
 
 type minHeap struct {
@@ -63,6 +77,15 @@ type minHeap struct {
 type heapNode struct {
 	vert    *Vertex
 	minCost int
+}
+
+func initHeap() minHeap {
+	heap, lastEmpty := make([]heapNode, 0, 0), 0
+
+	return minHeap{
+		heap:      &heap,
+		lastEmpty: &lastEmpty,
+	}
 }
 
 func insert(minheap minHeap, n heapNode) {
@@ -78,17 +101,16 @@ func insert(minheap minHeap, n heapNode) {
 
 	swapNode(heap, *lastEmpty-1, *lastEmpty-1)
 
-	bubbleUp(*lastEmpty, heap)
+	bubbleUp(*lastEmpty, minheap)
 }
 
 func extractMin(minheap minHeap) heapNode {
-	var lastEmpty *int = minheap.lastEmpty
+	lastEmpty, heap := minheap.lastEmpty, minheap.heap
 
 	if *lastEmpty == 0 {
 		return heapNode{vert: nil, minCost: maxInt}
 	}
 
-	heap := minheap.heap
 	ret := (*heap)[0]
 
 	*lastEmpty--
@@ -100,8 +122,61 @@ func extractMin(minheap minHeap) heapNode {
 	return ret
 }
 
+func update(minheap minHeap, heapIdx int, newCost int) {
+	lastEmpty, heap := minheap.lastEmpty, minheap.heap
+
+	if heapIdx >= *lastEmpty {
+		return
+	}
+
+	if newCost < (*heap)[heapIdx].minCost {
+		(*heap)[heapIdx].minCost = newCost
+		bubbleUp(heapIdx+1, minheap)
+	}
+}
+
+func peekAt(minheap minHeap, heapIdx int) heapNode {
+	lastEmpty, heap := minheap.lastEmpty, minheap.heap
+
+	if heapIdx >= *lastEmpty {
+		return heapNode{vert: nil, minCost: maxInt}
+	}
+
+	return (*heap)[heapIdx]
+}
+
+func peekMin(minheap minHeap) heapNode {
+	lastEmpty, heap := minheap.lastEmpty, minheap.heap
+
+	if *lastEmpty == 0 {
+		return heapNode{vert: nil, minCost: maxInt}
+	}
+
+	return (*heap)[0]
+}
+
+// func delete(minheap minHeap, heapIdx int) {
+// 	lastEmpty, heap := minheap.lastEmpty, minheap.heap
+
+// 	if heapIdx >= *lastEmpty {
+// 		return
+// 	}
+
+// 	*lastEmpty--
+// 	swapNode(heap, heapIdx, *lastEmpty)
+
+// 	if (*heap)[heapIdx].minCost > (*heap)[*lastEmpty].minCost {
+// 		bubbleDown(heapIdx+1, minheap)
+// 	} else {
+// 		bubbleUp(heapIdx+1, minheap)
+// 	}
+
+// 	(*heap)[*lastEmpty].vert.HeapIdx = -1 // bye
+// }
+
 // pos is one based index
-func bubbleUp(pos int, heap *[]heapNode) {
+func bubbleUp(pos int, minheap minHeap) {
+	heap := minheap.heap
 	for p := pos; p > 1 && (*heap)[p/2-1].minCost >= (*heap)[p-1].minCost; p = p / 2 {
 		swapNode(heap, p-1, p/2-1)
 	}

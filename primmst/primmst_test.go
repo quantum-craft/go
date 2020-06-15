@@ -119,14 +119,33 @@ func TestPrimMST(t *testing.T) {
 			edges[k].VertIdx[1] = vidx2
 			edges[k].Cost = cost
 
+			vertices[vidx1].VIdx = vidx1
+			vertices[vidx2].VIdx = vidx2
 			vertices[vidx1].HeapIdx = -1 // not in heap yet
 			vertices[vidx2].HeapIdx = -1 // not in heap yet
+
+			if vertices[vidx1].Edges == nil {
+				vertices[vidx1].Edges = make([]*Edge, 0)
+			}
+
+			if vertices[vidx2].Edges == nil {
+				vertices[vidx2].Edges = make([]*Edge, 0)
+			}
+
+			vertices[vidx1].Edges = append(vertices[vidx1].Edges, &edges[k])
+			vertices[vidx2].Edges = append(vertices[vidx2].Edges, &edges[k])
 
 			k++
 		}
 	}
 
-	PrimMST(vertices, edges)
+	for i := 0; i < len(vertices); i++ {
+		minCost := PrimMST(vertices, edges, i)
+
+		if minCost != -3612829 {
+			t.Error("TestPrimMST error !")
+		}
+	}
 }
 
 var r = rand.New(rand.NewSource(time.Now().Unix()))
