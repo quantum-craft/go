@@ -2,6 +2,7 @@ package primmst
 
 import (
 	"bufio"
+	"fmt"
 	"math/rand"
 	"os"
 	"strconv"
@@ -67,10 +68,8 @@ func TestRatioScheduling(t *testing.T) {
 			weights = make([]int, size, size)
 			lengths = make([]int, size, size)
 		} else {
-			w, _ := strconv.Atoi(fields[0])
-			l, _ := strconv.Atoi(fields[1])
-			weights[k] = w
-			lengths[k] = l
+			weights[k], _ = strconv.Atoi(fields[0])
+			lengths[k], _ = strconv.Atoi(fields[1])
 			k++
 		}
 	}
@@ -88,6 +87,43 @@ func TestRatioScheduling(t *testing.T) {
 	if sum != 67311454237 {
 		t.Error("TestDiffRatio error !")
 	}
+}
+
+func TestPrimMST(t *testing.T) {
+	f, _ := os.Open("../data/edges.txt")
+	defer f.Close()
+
+	var numVertices, numEdges int
+	var Vertices []Vertex
+	var Edges []Edge
+
+	k := 0
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		line := scanner.Text()
+		fields := strings.Fields(line)
+
+		if len(fields) == 2 {
+			numVertices, _ = strconv.Atoi(fields[0])
+			numEdges, _ = strconv.Atoi(fields[1])
+
+			Vertices = make([]Vertex, numVertices)
+			Edges = make([]Edge, numEdges)
+		} else {
+			vidx1, _ := strconv.Atoi(fields[0])
+			vidx2, _ := strconv.Atoi(fields[1])
+			cost, _ := strconv.Atoi(fields[2])
+
+			Edges[k].VertIdx[0] = vidx1
+			Edges[k].VertIdx[1] = vidx2
+			Edges[k].Cost = cost
+
+			k++
+		}
+	}
+
+	fmt.Println(Vertices[len(Vertices)-1])
+	fmt.Println(Edges[len(Edges)-1])
 }
 
 var r = rand.New(rand.NewSource(time.Now().Unix()))
