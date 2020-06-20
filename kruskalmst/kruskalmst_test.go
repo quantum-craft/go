@@ -2,11 +2,47 @@ package kruskalmst
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
 	"testing"
 )
+
+func TestMaxSpacingClusteringLarge(t *testing.T) {
+	f, _ := os.Open("../data/four_clustering_big.txt")
+	defer f.Close()
+
+	var numVertices int
+	var vertices []Vertex
+
+	k := 0
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		line := scanner.Text()
+		fields := strings.Fields(line)
+
+		if len(fields) == 2 {
+			numVertices, _ = strconv.Atoi(fields[0])
+			vertices = make([]Vertex, numVertices)
+		} else {
+			vertices[k].VIdx = k
+			vertices[k].GroupLeader = &vertices[k] // assign self as leader
+			vertices[k].GroupSize = 1              // only self
+			vertices[k].Added = false
+
+			for i := 0; i < len(fields); i++ {
+				digit, _ := strconv.Atoi(fields[i])
+				vertices[k].Code = vertices[k].Code*2 + uint32(digit)
+			}
+
+			k++
+		}
+	}
+
+	fmt.Println(hammingDist(vertices[0].Code, vertices[1].Code))
+	fmt.Println(hammingDist(vertices[2].Code, vertices[3].Code))
+}
 
 func TestMaxSpacingClustering(t *testing.T) {
 	f, _ := os.Open("../data/four_clustering1.txt")

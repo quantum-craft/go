@@ -11,6 +11,7 @@ type Vertex struct {
 	GroupLeader *Vertex
 	GroupSize   int
 	Added       bool
+	Code        uint32 // Hamming Code
 	// Edges       []*Edge
 }
 
@@ -20,9 +21,19 @@ type Edge struct {
 	Cost    int
 }
 
-func bigEatsSmall(big *Vertex, small *Vertex) {
-	small.GroupLeader = big
-	big.GroupSize += small.GroupSize
+func hammingDist(x uint32, y uint32) int {
+	return bitCount(x ^ y)
+}
+
+func bitCount(x uint32) int {
+	cnt := 0
+
+	for x != 0 {
+		x = x & (x - 1)
+		cnt++
+	}
+
+	return cnt
 }
 
 // MaxSpacingClustering is very similar to KruskalMST
@@ -90,6 +101,11 @@ func KruskalMST(vertices []Vertex, edges []Edge) int {
 	}
 
 	return minCost
+}
+
+func bigEatsSmall(big *Vertex, small *Vertex) {
+	small.GroupLeader = big
+	big.GroupSize += small.GroupSize
 }
 
 var maxDepth int = 0
