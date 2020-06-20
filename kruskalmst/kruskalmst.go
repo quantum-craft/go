@@ -20,6 +20,40 @@ type Edge struct {
 	Cost    int
 }
 
+func bigEatsSmall(big *Vertex, small *Vertex) {
+	small.GroupLeader = big
+	big.GroupSize += small.GroupSize
+}
+
+// MaxSpacingClustering is very similar to KruskalMST
+// Used to calculate k-clustering with maximized min-distance of groups
+func MaxSpacingClustering(vertices []Vertex, edges []Edge, k int) int {
+	groupCnt := len(vertices)
+
+	quickSort(edges)
+
+	for i := 0; i < len(edges); i++ {
+		vert0, vert1 := &vertices[edges[i].VertIdx[0]], &vertices[edges[i].VertIdx[1]]
+		leader0, leader1 := findLeader(vert0), findLeader(vert1)
+
+		if leader0 != leader1 {
+			if groupCnt != k {
+				if leader0.GroupSize > leader1.GroupSize {
+					bigEatsSmall(leader0, leader1)
+				} else {
+					bigEatsSmall(leader1, leader0)
+				}
+
+				groupCnt--
+			} else {
+				return edges[i].Cost
+			}
+		}
+	}
+
+	return -1
+}
+
 // KruskalMST using Kruskal's minimum spanning tree algorithm to find mst cost
 func KruskalMST(vertices []Vertex, edges []Edge) int {
 	minCost, vertCnt := 0, 0
@@ -47,13 +81,10 @@ func KruskalMST(vertices []Vertex, edges []Edge) int {
 				vertCnt++
 			}
 
-			// big eats small
 			if leader0.GroupSize > leader1.GroupSize {
-				leader1.GroupLeader = leader0
-				leader0.GroupSize += leader1.GroupSize
+				bigEatsSmall(leader0, leader1)
 			} else {
-				leader0.GroupLeader = leader1
-				leader1.GroupSize += leader0.GroupSize
+				bigEatsSmall(leader1, leader0)
 			}
 		}
 	}
@@ -61,10 +92,19 @@ func KruskalMST(vertices []Vertex, edges []Edge) int {
 	return minCost
 }
 
+var maxDepth int = 0
+
 func findLeader(vert *Vertex) *Vertex {
 	v := vert
+	debug := 0
+
 	for v.GroupLeader.VIdx != v.VIdx {
 		v = v.GroupLeader
+		debug++
+	}
+
+	if debug > maxDepth {
+		maxDepth = debug
 	}
 
 	return v
