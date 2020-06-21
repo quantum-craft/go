@@ -2,18 +2,20 @@ package kruskalmst
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
 	"testing"
 )
 
-func TestMaxSpacingClusteringLarge(t *testing.T) {
+func TTestMaxSpacingClusteringLarge(t *testing.T) {
 	f, _ := os.Open("../data/four_clustering_big.txt")
 	defer f.Close()
 
-	var numVertices int
-	var vertices []Vertex
+	// var numVertices int
+	vertices := make([]Vertex, 0)
+	bookKeeper := make(map[uint32]int)
 
 	k := 0
 	scanner := bufio.NewScanner(f)
@@ -22,17 +24,67 @@ func TestMaxSpacingClusteringLarge(t *testing.T) {
 		fields := strings.Fields(line)
 
 		if len(fields) == 2 {
-			numVertices, _ = strconv.Atoi(fields[0])
-			vertices = make([]Vertex, numVertices)
+			// numVertices, _ = strconv.Atoi(fields[0])
+			// vertices = make([]Vertex, numVertices)
 		} else {
-			vertices[k].VIdx = k
-			vertices[k].GroupLeader = &vertices[k] // assign self as leader
-			vertices[k].GroupSize = 1              // only self
-			vertices[k].Added = false
-			vertices[k].Code = streamToUint(fields)
+			code := streamToUint(fields)
+
+			_, ok := bookKeeper[code]
+			if ok == true {
+				continue
+			}
+			bookKeeper[code] = k
+
+			vertices = append(vertices, Vertex{
+				VIdx:        k,
+				GroupLeader: nil,
+				GroupSize:   1, // only self
+				Added:       false,
+				Code:        code,
+			})
 
 			k++
 		}
+	}
+
+	for i := 0; i < len(vertices); i++ {
+		vertices[i].GroupLeader = &vertices[i] // assign self as leader
+	}
+
+	edgesOne := make([]Edge, 0)
+	edgesTwo := make([]Edge, 0)
+	k = 0
+	for i := 0; i < len(vertices); i++ {
+		for j := i + 1; j < len(vertices); j++ {
+			if hammingDist(vertices[i].Code, vertices[j].Code) == 1 {
+				edgesOne = append(edgesOne, Edge{
+					VertIdx: [2]int{i, j},
+					Cost:    1,
+				})
+
+			} else if hammingDist(vertices[i].Code, vertices[j].Code) == 2 {
+				edgesTwo = append(edgesTwo, Edge{
+					VertIdx: [2]int{i, j},
+					Cost:    2,
+				})
+			}
+
+			k++
+			if k%10000000 == 0 {
+				fmt.Println(k)
+			}
+		}
+	}
+
+	fmt.Println(len(edgesOne))
+	fmt.Println(len(edgesTwo))
+
+	largestGroup := MaxHammingClustering(vertices, edgesOne, edgesTwo)
+
+	fmt.Println(largestGroup)
+
+	if largestGroup == 6118 {
+		t.Error("TestMaxSpacingClusteringLarge error !")
 	}
 }
 

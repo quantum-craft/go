@@ -24,31 +24,43 @@ type Edge struct {
 
 // MaxHammingClustering is very similar to KruskalMST
 // Used to calculate k-clustering with expected min-distance of groups
-func MaxHammingClustering(vertices []Vertex, edges []Edge, spacing int) int {
+// Expected min-distance is 3 for this func
+func MaxHammingClustering(vertices []Vertex, edgesOne []Edge, edgesTwo []Edge) int {
 	groupCnt := len(vertices)
 
-	quickSort(edges)
+	// quickSort(edges)
 
-	for i := 0; i < len(edges); i++ {
-		vert0, vert1 := &vertices[edges[i].VertIdx[0]], &vertices[edges[i].VertIdx[1]]
+	for i := 0; i < len(edgesOne); i++ {
+		vert0, vert1 := &vertices[edgesOne[i].VertIdx[0]], &vertices[edgesOne[i].VertIdx[1]]
 		leader0, leader1 := findLeader(vert0), findLeader(vert1)
 
 		if leader0 != leader1 {
-			if edges[i].Cost != spacing {
-				if leader0.GroupSize > leader1.GroupSize {
-					bigEatsSmall(leader0, leader1)
-				} else {
-					bigEatsSmall(leader1, leader0)
-				}
-
-				groupCnt--
+			if leader0.GroupSize > leader1.GroupSize {
+				bigEatsSmall(leader0, leader1)
 			} else {
-				return groupCnt
+				bigEatsSmall(leader1, leader0)
 			}
+
+			groupCnt--
 		}
 	}
 
-	return -1
+	for i := 0; i < len(edgesTwo); i++ {
+		vert0, vert1 := &vertices[edgesTwo[i].VertIdx[0]], &vertices[edgesTwo[i].VertIdx[1]]
+		leader0, leader1 := findLeader(vert0), findLeader(vert1)
+
+		if leader0 != leader1 {
+			if leader0.GroupSize > leader1.GroupSize {
+				bigEatsSmall(leader0, leader1)
+			} else {
+				bigEatsSmall(leader1, leader0)
+			}
+
+			groupCnt--
+		}
+	}
+
+	return groupCnt
 }
 
 func hammingDist(x uint32, y uint32) int {
