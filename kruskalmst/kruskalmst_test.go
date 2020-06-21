@@ -9,40 +9,7 @@ import (
 )
 
 func TestMaxSpacingClusteringLarge(t *testing.T) {
-	f, _ := os.Open("../data/four_clustering_big.txt")
-	defer f.Close()
-
-	var numVertices int
-	var vertices []Vertex
-
-	k := 0
-	scanner := bufio.NewScanner(f)
-	for scanner.Scan() {
-		line := scanner.Text()
-		fields := strings.Fields(line)
-
-		if len(fields) == 2 {
-			numVertices, _ = strconv.Atoi(fields[0])
-			vertices = make([]Vertex, numVertices)
-		} else {
-			vertices[k].VIdx = k
-			vertices[k].GroupLeader = &vertices[k] // assign self as leader
-			vertices[k].GroupSize = 1              // only self
-			vertices[k].Added = false
-			vertices[k].Code = streamToUint(fields)
-
-			k++
-		}
-	}
-
-	// l := 0
-	// for i := 0; i < len(vertices); i++ {
-	// 	for j := i + 1; j < len(vertices); j++ {
-	// 		l++
-	// 	}
-	// }
-
-	// fmt.Println(l)
+	// TestMaxSpacing()
 
 	// a := streamToUint([]string{"0", "1", "1", "0", "1", "1", "0"})
 	// b := streamToUint([]string{"1", "1", "0", "0", "1", "1", "1"})

@@ -1,8 +1,12 @@
 package kruskalmst
 
 import (
+	"bufio"
+	"fmt"
 	"math/rand"
+	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -20,6 +24,90 @@ type Vertex struct {
 type Edge struct {
 	VertIdx [2]int
 	Cost    int
+}
+
+// TestMaxSpacing is using brute-force to solve big Hamming problem
+func TestMaxSpacing() {
+	f, _ := os.Open("../data/four_clustering_big.txt")
+	defer f.Close()
+
+	var numVertices, numEdges int
+	var vertices []Vertex
+	var edges []Edge
+
+	k := 0
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		line := scanner.Text()
+		fields := strings.Fields(line)
+
+		if len(fields) == 2 {
+			numVertices, _ = strconv.Atoi(fields[0])
+			numEdges = numVertices * (numVertices - 1) / 2 // n choose 2
+			vertices = make([]Vertex, numVertices)
+			edges = make([]Edge, numEdges)
+
+			fmt.Println(numEdges)
+		} else {
+			vertices[k].VIdx = k
+			vertices[k].GroupLeader = &vertices[k] // assign self as leader
+			vertices[k].GroupSize = 1              // only self
+			vertices[k].Added = false
+			vertices[k].Code = streamToUint(fields)
+
+			k++
+		}
+	}
+
+	k = 0
+	for i := 0; i < len(vertices); i++ {
+		for j := i + 1; j < len(vertices); j++ {
+			edges[k].VertIdx[0] = i
+			edges[k].VertIdx[1] = j
+			edges[k].Cost = hammingDist(vertices[i].Code, vertices[j].Code)
+
+			k++
+
+			if k%10000000 == 0 {
+				fmt.Println(k)
+			}
+		}
+	}
+
+	fmt.Println("start KruskalMST ...")
+
+	groups := MaxHammingClustering(vertices, edges, 3)
+
+	fmt.Println(groups)
+}
+
+// MaxHammingClustering is very similar to KruskalMST
+// Used to calculate k-clustering with expected min-distance of groups
+func MaxHammingClustering(vertices []Vertex, edges []Edge, spacing int) int {
+	groupCnt := len(vertices)
+
+	quickSort(edges)
+
+	for i := 0; i < len(edges); i++ {
+		vert0, vert1 := &vertices[edges[i].VertIdx[0]], &vertices[edges[i].VertIdx[1]]
+		leader0, leader1 := findLeader(vert0), findLeader(vert1)
+
+		if leader0 != leader1 {
+			if edges[i].Cost != spacing {
+				if leader0.GroupSize > leader1.GroupSize {
+					bigEatsSmall(leader0, leader1)
+				} else {
+					bigEatsSmall(leader1, leader0)
+				}
+
+				groupCnt--
+			} else {
+				return groupCnt
+			}
+		}
+	}
+
+	return -1
 }
 
 func hammingDist(x uint32, y uint32) int {
