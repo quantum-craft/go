@@ -2,6 +2,7 @@ package kruskalmst
 
 import (
 	"math/rand"
+	"strconv"
 	"time"
 )
 
@@ -34,6 +35,17 @@ func bitCount(x uint32) int {
 	}
 
 	return cnt
+}
+
+func streamToUint(s []string) uint32 {
+	var acc uint32 = 0
+
+	for i := 0; i < len(s); i++ {
+		digit, _ := strconv.Atoi(s[i])
+		acc = acc*2 + uint32(digit)
+	}
+
+	return acc
 }
 
 // MaxSpacingClustering is very similar to KruskalMST

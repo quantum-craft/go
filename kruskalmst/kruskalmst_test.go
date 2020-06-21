@@ -2,7 +2,6 @@ package kruskalmst
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -30,18 +29,34 @@ func TestMaxSpacingClusteringLarge(t *testing.T) {
 			vertices[k].GroupLeader = &vertices[k] // assign self as leader
 			vertices[k].GroupSize = 1              // only self
 			vertices[k].Added = false
-
-			for i := 0; i < len(fields); i++ {
-				digit, _ := strconv.Atoi(fields[i])
-				vertices[k].Code = vertices[k].Code*2 + uint32(digit)
-			}
+			vertices[k].Code = streamToUint(fields)
 
 			k++
 		}
 	}
 
-	fmt.Println(hammingDist(vertices[0].Code, vertices[1].Code))
-	fmt.Println(hammingDist(vertices[2].Code, vertices[3].Code))
+	// l := 0
+	// for i := 0; i < len(vertices); i++ {
+	// 	for j := i + 1; j < len(vertices); j++ {
+	// 		l++
+	// 	}
+	// }
+
+	// fmt.Println(l)
+
+	// a := streamToUint([]string{"0", "1", "1", "0", "1", "1", "0"})
+	// b := streamToUint([]string{"1", "1", "0", "0", "1", "1", "1"})
+	// c := streamToUint([]string{"1", "0", "1", "0", "1", "1", "1"})
+	// d := streamToUint([]string{"1", "1", "0", "0", "1", "1", "1"})
+	// e := streamToUint([]string{"1", "0", "1", "1", "1", "1", "1"})
+	// ff := streamToUint([]string{"1", "0", "1", "1", "0", "1", "1"})
+
+	// fmt.Println(hammingDist(vertices[0].Code, vertices[1].Code))
+	// fmt.Println(hammingDist(vertices[2].Code, vertices[3].Code))
+
+	// fmt.Println(hammingDist(a, b))
+	// fmt.Println(hammingDist(c, d))
+	// fmt.Println(hammingDist(e, ff))
 }
 
 func TestMaxSpacingClustering(t *testing.T) {
