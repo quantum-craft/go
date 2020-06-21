@@ -1,12 +1,8 @@
 package kruskalmst
 
 import (
-	"bufio"
-	"fmt"
 	"math/rand"
-	"os"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -24,61 +20,6 @@ type Vertex struct {
 type Edge struct {
 	VertIdx [2]int
 	Cost    int
-}
-
-// TestMaxSpacing is using brute-force to solve big Hamming problem
-func TestMaxSpacing() {
-	f, _ := os.Open("../data/four_clustering_big.txt")
-	defer f.Close()
-
-	var numVertices, numEdges int
-	var vertices []Vertex
-	var edges []Edge
-
-	k := 0
-	scanner := bufio.NewScanner(f)
-	for scanner.Scan() {
-		line := scanner.Text()
-		fields := strings.Fields(line)
-
-		if len(fields) == 2 {
-			numVertices, _ = strconv.Atoi(fields[0])
-			numEdges = numVertices * (numVertices - 1) / 2 // n choose 2
-			vertices = make([]Vertex, numVertices)
-			edges = make([]Edge, numEdges)
-
-			fmt.Println(numEdges)
-		} else {
-			vertices[k].VIdx = k
-			vertices[k].GroupLeader = &vertices[k] // assign self as leader
-			vertices[k].GroupSize = 1              // only self
-			vertices[k].Added = false
-			vertices[k].Code = streamToUint(fields)
-
-			k++
-		}
-	}
-
-	k = 0
-	for i := 0; i < len(vertices); i++ {
-		for j := i + 1; j < len(vertices); j++ {
-			edges[k].VertIdx[0] = i
-			edges[k].VertIdx[1] = j
-			edges[k].Cost = hammingDist(vertices[i].Code, vertices[j].Code)
-
-			k++
-
-			if k%10000000 == 0 {
-				fmt.Println(k)
-			}
-		}
-	}
-
-	fmt.Println("start KruskalMST ...")
-
-	groups := MaxHammingClustering(vertices, edges, 3)
-
-	fmt.Println(groups)
 }
 
 // MaxHammingClustering is very similar to KruskalMST

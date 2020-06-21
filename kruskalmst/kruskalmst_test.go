@@ -9,21 +9,31 @@ import (
 )
 
 func TestMaxSpacingClusteringLarge(t *testing.T) {
-	// TestMaxSpacing()
+	f, _ := os.Open("../data/four_clustering_big.txt")
+	defer f.Close()
 
-	// a := streamToUint([]string{"0", "1", "1", "0", "1", "1", "0"})
-	// b := streamToUint([]string{"1", "1", "0", "0", "1", "1", "1"})
-	// c := streamToUint([]string{"1", "0", "1", "0", "1", "1", "1"})
-	// d := streamToUint([]string{"1", "1", "0", "0", "1", "1", "1"})
-	// e := streamToUint([]string{"1", "0", "1", "1", "1", "1", "1"})
-	// ff := streamToUint([]string{"1", "0", "1", "1", "0", "1", "1"})
+	var numVertices int
+	var vertices []Vertex
 
-	// fmt.Println(hammingDist(vertices[0].Code, vertices[1].Code))
-	// fmt.Println(hammingDist(vertices[2].Code, vertices[3].Code))
+	k := 0
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		line := scanner.Text()
+		fields := strings.Fields(line)
 
-	// fmt.Println(hammingDist(a, b))
-	// fmt.Println(hammingDist(c, d))
-	// fmt.Println(hammingDist(e, ff))
+		if len(fields) == 2 {
+			numVertices, _ = strconv.Atoi(fields[0])
+			vertices = make([]Vertex, numVertices)
+		} else {
+			vertices[k].VIdx = k
+			vertices[k].GroupLeader = &vertices[k] // assign self as leader
+			vertices[k].GroupSize = 1              // only self
+			vertices[k].Added = false
+			vertices[k].Code = streamToUint(fields)
+
+			k++
+		}
+	}
 }
 
 func TestMaxSpacingClustering(t *testing.T) {
