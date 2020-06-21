@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/quantum-craft/go/graph"
+	"github.com/quantum-craft/go/kruskalmst"
 )
 
 func report(mincut *int, quitCh chan bool) {
@@ -51,7 +52,5 @@ func main2() {
 var r = rand.New(rand.NewSource(time.Now().Unix()))
 
 func main() {
-	for i := 0; i < 30; i++ {
-		fmt.Println(1 + r.Intn(15))
-	}
+	kruskalmst.TestMaxSpacing()
 }
