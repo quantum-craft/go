@@ -22,43 +22,66 @@ type Edge struct {
 	Cost    int
 }
 
+func groupingHammingDist(vertices []Vertex, weights []uint32, bookKeeper map[uint32][]int, groupCnt *int) {
+	for i := 0; i < len(vertices); i++ {
+		for k := 0; k < len(weights); k++ {
+			idxs, ok := bookKeeper[vertices[i].Code^weights[k]]
+			if ok == true {
+				for j := 0; j < len(idxs); j++ {
+					if idxs[j] != i {
+						grouping(vertices, i, idxs[j], groupCnt)
+					}
+				}
+			}
+		}
+	}
+}
+
+func grouping(vertices []Vertex, idx0, idx1 int, groupCnt *int) {
+	vert0, vert1 := &vertices[idx0], &vertices[idx1]
+	leader0, leader1 := findLeader(vert0), findLeader(vert1)
+
+	if leader0 != leader1 {
+		if leader0.GroupSize > leader1.GroupSize {
+			bigEatsSmall(leader0, leader1)
+		} else {
+			bigEatsSmall(leader1, leader0)
+		}
+
+		*groupCnt--
+	}
+}
+
 // MaxHammingClustering is very similar to KruskalMST
 // Used to calculate k-clustering with expected min-distance of groups
 // Expected min-distance is 3 for this func
-func MaxHammingClustering(vertices []Vertex, edgesOne []Edge, edgesTwo []Edge) int {
+func MaxHammingClustering(vertices []Vertex, bookKeeper map[uint32][]int) int {
 	groupCnt := len(vertices)
 
-	// quickSort(edges)
+	var weightZeros [1]uint32
+	weightZeros[0] = uint32(0)
 
-	for i := 0; i < len(edgesOne); i++ {
-		vert0, vert1 := &vertices[edgesOne[i].VertIdx[0]], &vertices[edgesOne[i].VertIdx[1]]
-		leader0, leader1 := findLeader(vert0), findLeader(vert1)
+	var weightOnes [24]uint32
+	for i := 0; i < 24; i++ {
+		weightOnes[i] = uint32(1 << i)
+	}
 
-		if leader0 != leader1 {
-			if leader0.GroupSize > leader1.GroupSize {
-				bigEatsSmall(leader0, leader1)
-			} else {
-				bigEatsSmall(leader1, leader0)
-			}
-
-			groupCnt--
+	var weightTwos [276]uint32 // 24 choose 2
+	k := 0
+	for i := 0; i < 24; i++ {
+		for j := i + 1; j < 24; j++ {
+			weightTwos[k] = uint32(1<<i) | uint32(1<<j)
+			k++
 		}
 	}
 
-	for i := 0; i < len(edgesTwo); i++ {
-		vert0, vert1 := &vertices[edgesTwo[i].VertIdx[0]], &vertices[edgesTwo[i].VertIdx[1]]
-		leader0, leader1 := findLeader(vert0), findLeader(vert1)
+	weights := make([]uint32, 0)
+	weights = append(weights, weightZeros[:]...)
+	weights = append(weights, weightOnes[:]...)
+	weights = append(weights, weightTwos[:]...)
 
-		if leader0 != leader1 {
-			if leader0.GroupSize > leader1.GroupSize {
-				bigEatsSmall(leader0, leader1)
-			} else {
-				bigEatsSmall(leader1, leader0)
-			}
-
-			groupCnt--
-		}
-	}
+	// grouping Hamming distance of zero, one, and two
+	groupingHammingDist(vertices, weights[:], bookKeeper, &groupCnt)
 
 	return groupCnt
 }
@@ -161,19 +184,11 @@ func bigEatsSmall(big *Vertex, small *Vertex) {
 	big.GroupSize += small.GroupSize
 }
 
-var maxDepth int = 0
-
 func findLeader(vert *Vertex) *Vertex {
 	v := vert
-	debug := 0
 
 	for v.GroupLeader.VIdx != v.VIdx {
 		v = v.GroupLeader
-		debug++
-	}
-
-	if debug > maxDepth {
-		maxDepth = debug
 	}
 
 	return v
