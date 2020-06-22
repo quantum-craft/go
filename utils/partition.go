@@ -12,7 +12,7 @@ func Partition(xs []int, pivotIdx int) int {
 
 	i := 0
 	for j := 1; j < len(xs); j++ {
-		if xs[j] <= xs[0] {
+		if xs[j] < xs[0] {
 			Swap(xs, i+1, j)
 			i++
 		}
@@ -35,7 +35,7 @@ func PartitionByte(xs []byte, pivotIdx int) int {
 
 	i := 0
 	for j := 1; j < len(xs); j++ {
-		if xs[j] <= xs[0] {
+		if xs[j] < xs[0] {
 			SwapByte(xs, i+1, j)
 			i++
 		}
