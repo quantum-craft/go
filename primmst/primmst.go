@@ -90,22 +90,3 @@ func PrimMST(vertices []Vertex, edges []Edge, startIdx int) int {
 
 	return mstcost
 }
-
-// func delete(minheap minHeap, heapIdx int) {
-// 	lastEmpty, heap := minheap.lastEmpty, minheap.heap
-
-// 	if heapIdx >= *lastEmpty {
-// 		return
-// 	}
-
-// 	*lastEmpty--
-// 	swapNode(heap, heapIdx, *lastEmpty)
-
-// 	if (*heap)[heapIdx].minCost > (*heap)[*lastEmpty].minCost {
-// 		bubbleDown(heapIdx+1, minheap)
-// 	} else {
-// 		bubbleUp(heapIdx+1, minheap)
-// 	}
-
-// 	(*heap)[*lastEmpty].vert.HeapIdx = -1 // bye
-// }

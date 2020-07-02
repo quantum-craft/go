@@ -101,6 +101,27 @@ func PeekMin(minheap MinHeap) HeapNode {
 	return (*heap)[0]
 }
 
+// Delete will delete the element at heapIdx and replace it with the last element
+// re-heapify
+func Delete(minheap MinHeap, heapIdx int) {
+	lastEmpty, heap := minheap.lastEmpty, minheap.heap
+
+	if heapIdx >= *lastEmpty {
+		return
+	}
+
+	*lastEmpty--
+	swapNode(heap, heapIdx, *lastEmpty)
+
+	if (*heap)[heapIdx].GetCost() > (*heap)[*lastEmpty].GetCost() {
+		bubbleDown(heapIdx+1, minheap)
+	} else {
+		bubbleUp(heapIdx+1, minheap)
+	}
+
+	(*heap)[*lastEmpty].SetHeapIdx(-1) // bye
+}
+
 // pos is one based index
 func bubbleUp(pos int, minheap MinHeap) {
 	heap := minheap.heap
