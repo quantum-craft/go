@@ -25,18 +25,22 @@ type heapNode struct {
 	minCost *int
 }
 
+// GetCost implements the interface of min-heap
 func (n heapNode) GetCost() int {
 	return *n.minCost
 }
 
+// SetCost implements the interface of min-heap
 func (n heapNode) SetCost(newCost int) {
 	*n.minCost = newCost
 }
 
+// GetHeapIdx implements the interface of min-heap
 func (n heapNode) GetHeapIdx() int {
 	return n.vert.HeapIdx
 }
 
+// SetHeapIdx implements the interface of min-heap
 func (n heapNode) SetHeapIdx(idx int) {
 	n.vert.HeapIdx = idx
 }

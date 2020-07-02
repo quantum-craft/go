@@ -29,18 +29,22 @@ type Node struct {
 	Key *Vertex
 }
 
+// GetCost implements the interface of min-heap
 func (n Node) GetCost() int {
 	return n.Key.Score
 }
 
+// SetCost implements the interface of min-heap
 func (n Node) SetCost(newCost int) {
 	n.Key.Score = newCost
 }
 
+// GetHeapIdx implements the interface of min-heap
 func (n Node) GetHeapIdx() int {
 	return n.Key.heapIdx
 }
 
+// SetHeapIdx implements the interface of min-heap
 func (n Node) SetHeapIdx(idx int) {
 	n.Key.heapIdx = idx
 }
