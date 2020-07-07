@@ -1,4 +1,4 @@
-package sorting
+package sort
 
 // MergeSort is a basic nlgn sorting algorithm
 func MergeSort(xs []int) []int {

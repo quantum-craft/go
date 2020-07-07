@@ -8,8 +8,6 @@ import (
 	"strconv"
 	"strings"
 	"testing"
-
-	"github.com/quantum-craft/go/utils"
 )
 
 // Vertex is an element of V of a Graph G(V, E)
@@ -89,7 +87,22 @@ func TestHeapSortLarge(t *testing.T) {
 		n, ok = ExtractMin(minheap).(Node)
 	}
 
-	if !utils.SliceIncreasing(ans) {
+	if !SliceIncreasing(ans) {
 		t.Error("HeapSort error !")
 	}
+}
+
+// SliceIncreasing tests if the slice is incremental by one
+func SliceIncreasing(xs []int) bool {
+	if len(xs) <= 1 {
+		return true
+	}
+
+	for i := 0; i < len(xs)-1; i++ {
+		if xs[i+1]-xs[i] != 1 {
+			return false
+		}
+	}
+
+	return true
 }

@@ -9,6 +9,7 @@ import (
 
 	heap "github.com/quantum-craft/go/minheap"
 	queue "github.com/quantum-craft/go/queue"
+	sort "github.com/quantum-craft/go/sort"
 )
 
 // HeapNode serves both purposes: node of min-heap and node of Huffman tree
@@ -40,6 +41,35 @@ func (n HeapNode) SetHeapIdx(idx int) {
 	// Do nothing
 }
 
+// ConcreteData is used as sort.Data
+type ConcreteData struct {
+	d []HeapNode
+}
+
+// Swap implements interface sort.Data
+func (a ConcreteData) Swap(i, j int) {
+	a.d[i], a.d[j] = a.d[j], a.d[i]
+}
+
+// Range implements interface sort.Data
+func (a ConcreteData) Range(i, j int) sort.Data {
+	return ConcreteData{d: a.d[i:j]}
+}
+
+// Len implements interface sort.Data
+func (a ConcreteData) Len() int {
+	return len(a.d)
+}
+
+// LessThan implements interface sort.Data
+func (a ConcreteData) LessThan(i, j int) bool {
+	if a.d[i].weight < a.d[j].weight {
+		return true
+	}
+
+	return false
+}
+
 var maxNode HeapNode = HeapNode{
 	alphabet: "",
 	weight:   queue.GetMaxInt(),
@@ -55,7 +85,7 @@ func EncodingWithQueue(file string) HeapNode {
 
 	scanner := bufio.NewScanner(f)
 
-	data := []HeapNode{}
+	data := ConcreteData{d: []HeapNode{}}
 
 	k := 0
 	for scanner.Scan() {
@@ -63,7 +93,7 @@ func EncodingWithQueue(file string) HeapNode {
 		i, _ := strconv.Atoi(line)
 
 		if k > 0 {
-			data = append(data, HeapNode{
+			data.d = append(data.d, HeapNode{
 				alphabet: "",
 				weight:   i,
 				left:     nil,
@@ -74,16 +104,14 @@ func EncodingWithQueue(file string) HeapNode {
 		k++
 	}
 
-	quickSort(data)
+	sort.QuickSort(data)
 
 	minQueue := queue.MakeQueue()
-	minQueue.Enqueue(data[0])
-	minQueue.Enqueue(data[1])
 
-	k = 2
+	k = 0
 	var root HeapNode
 	for {
-		if k == len(data) && minQueue.QueueSize() == 1 {
+		if k == data.Len() && minQueue.QueueSize() == 1 {
 			root = minQueue.Dequeue().(HeapNode)
 			break
 		}
@@ -98,11 +126,11 @@ func EncodingWithQueue(file string) HeapNode {
 		}
 
 		d1, d2 := maxNode, maxNode
-		if k < len(data)-1 {
-			d1 = data[k]
-			d2 = data[k+1]
-		} else if k == len(data)-1 {
-			d1 = data[k]
+		if k < data.Len()-1 {
+			d1 = data.d[k]
+			d2 = data.d[k+1]
+		} else if k == data.Len()-1 {
+			d1 = data.d[k]
 		}
 
 		compareList := []HeapNode{q1, q2, d1, d2}
@@ -138,41 +166,6 @@ func EncodingWithQueue(file string) HeapNode {
 }
 
 var r = rand.New(rand.NewSource(time.Now().Unix()))
-
-// QuickSort sorts array in-place with randomized choices of pivot
-func quickSort(xs []HeapNode) {
-	if len(xs) <= 1 {
-		return
-	}
-
-	pivotPos := partition(xs, r.Intn(len(xs)))
-	quickSort(xs[0:pivotPos])
-	quickSort(xs[pivotPos+1:])
-}
-
-func partition(xs []HeapNode, pivotIdx int) int {
-	if len(xs) <= 1 {
-		return 0
-	}
-
-	swap(xs, 0, pivotIdx)
-
-	i := 0
-	for j := 1; j < len(xs); j++ {
-		if xs[j].weight < xs[0].weight {
-			swap(xs, i+1, j)
-			i++
-		}
-	}
-
-	swap(xs, 0, i)
-
-	return i
-}
-
-func swap(xs []HeapNode, thisIdx int, thatIdx int) {
-	xs[thisIdx], xs[thatIdx] = xs[thatIdx], xs[thisIdx]
-}
 
 // Encoding encodes the input alphabets into a Huffman tree
 // Using min-heap to track 2 smallest members

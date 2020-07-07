@@ -2,8 +2,6 @@ package karatsuba
 
 import (
 	"testing"
-
-	"github.com/quantum-craft/go/utils"
 )
 
 func TestKaratsuba(t *testing.T) {
@@ -15,7 +13,22 @@ func TestKaratsuba(t *testing.T) {
 	karatsubaMul := Multiplication(a, b)
 	normalMul := NormalMultiplication(a, b)
 
-	if !utils.SliceEqual(karatsubaMul, normalMul) {
+	if !SliceEqual(karatsubaMul, normalMul) {
 		t.Error("TestKaratsuba error !")
 	}
+}
+
+// SliceEqual tests equality of two slices
+func SliceEqual(xs []int, ys []int) bool {
+	if len(xs) != len(ys) {
+		return false
+	}
+
+	for i := 0; i < len(xs); i++ {
+		if xs[i] != ys[i] {
+			return false
+		}
+	}
+
+	return true
 }

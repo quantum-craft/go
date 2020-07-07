@@ -1,4 +1,4 @@
-package sorting
+package sort
 
 import (
 	"bufio"
@@ -8,8 +8,6 @@ import (
 	"strconv"
 	"strings"
 	"testing"
-
-	"github.com/quantum-craft/go/utils"
 )
 
 func TestMergeSortSmall(t *testing.T) {
@@ -18,7 +16,7 @@ func TestMergeSortSmall(t *testing.T) {
 
 	ans := MergeSort(xs)
 
-	if !utils.SliceEqual(ans, ys) {
+	if !SliceEqual(ans, ys) {
 		t.Error("MergeSort error !")
 	}
 }
@@ -53,7 +51,37 @@ func TestMergeSortLarge(t *testing.T) {
 
 	ans := MergeSort(numbers)
 
-	if !utils.SliceIncreasing(ans) {
+	if !SliceIncreasing(ans) {
 		t.Error("MergeSort error !")
 	}
+}
+
+// SliceIncreasing tests if the slice is incremental by one
+func SliceIncreasing(xs []int) bool {
+	if len(xs) <= 1 {
+		return true
+	}
+
+	for i := 0; i < len(xs)-1; i++ {
+		if xs[i+1]-xs[i] != 1 {
+			return false
+		}
+	}
+
+	return true
+}
+
+// SliceEqual tests equality of two slices
+func SliceEqual(xs []int, ys []int) bool {
+	if len(xs) != len(ys) {
+		return false
+	}
+
+	for i := 0; i < len(xs); i++ {
+		if xs[i] != ys[i] {
+			return false
+		}
+	}
+
+	return true
 }

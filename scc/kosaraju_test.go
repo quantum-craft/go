@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/quantum-craft/go/sorting"
+	"github.com/quantum-craft/go/sort"
 )
 
 func TestKosaraju(t *testing.T) {
@@ -14,7 +14,7 @@ func TestKosaraju(t *testing.T) {
 
 	leaderCount := Kosaraju(file)
 
-	leaderCount = sorting.MergeSort(leaderCount)
+	leaderCount = sort.MergeSort(leaderCount)
 
 	fmt.Println(leaderCount[len(leaderCount)-1])
 	fmt.Println(leaderCount[len(leaderCount)-2])
