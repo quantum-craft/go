@@ -2,12 +2,13 @@ package huffman
 
 import (
 	"bufio"
+	"math/rand"
 	"os"
 	"strconv"
+	"time"
 
 	heap "github.com/quantum-craft/go/minheap"
-	sort "github.com/quantum-craft/go/sorting"
-	stack "github.com/quantum-craft/go/stack"
+	queue "github.com/quantum-craft/go/queue"
 )
 
 // HeapNode serves both purposes: node of min-heap and node of Huffman tree
@@ -39,15 +40,22 @@ func (n HeapNode) SetHeapIdx(idx int) {
 	// Do nothing
 }
 
-// Encoding2Stacks encodes the input alphabets into a Huffman tree
-// Using 2 stacks to track 2 smallest members
-func Encoding2Stacks(file string) HeapNode {
+var maxNode HeapNode = HeapNode{
+	alphabet: "",
+	weight:   queue.GetMaxInt(),
+	left:     nil,
+	right:    nil,
+}
+
+// EncodingWithQueue encodes the input alphabets into a Huffman tree
+// Using 1 queue to book-keeping
+func EncodingWithQueue(file string) HeapNode {
 	f, _ := os.Open(file)
 	defer f.Close()
 
 	scanner := bufio.NewScanner(f)
 
-	data := []int{}
+	data := []HeapNode{}
 
 	k := 0
 	for scanner.Scan() {
@@ -55,34 +63,66 @@ func Encoding2Stacks(file string) HeapNode {
 		i, _ := strconv.Atoi(line)
 
 		if k > 0 {
-			data = append(data, i)
+			data = append(data, HeapNode{
+				alphabet: "",
+				weight:   i,
+				left:     nil,
+				right:    nil,
+			})
 		}
 
 		k++
 	}
 
-	sort.QuickSort(data)
+	quickSort(data)
 
-	minStack, dataStack := stack.MakeStack(), stack.MakeStack()
-	for i := len(data) - 1; i >= 0; i-- {
-		dataStack.Push(HeapNode{
-			alphabet: "", // no need to store alphabet
-			weight:   data[i],
-			left:     nil,
-			right:    nil,
-		})
-	}
+	minQueue := queue.MakeQueue()
+	minQueue.Enqueue(data[0])
+	minQueue.Enqueue(data[1])
 
+	k = 2
 	var root HeapNode
 	for {
-		n1 := popMin(&minStack, &dataStack)
-
-		if dataStack.IsEmpty() && minStack.IsEmpty() {
-			root = n1
+		if k == len(data) && minQueue.QueueSize() == 1 {
+			root = minQueue.Dequeue().(HeapNode)
 			break
 		}
 
-		n2 := popMin(&minStack, &dataStack)
+		q1, ok1 := minQueue.PeekFront().(HeapNode)
+		if !ok1 {
+			q1 = maxNode
+		}
+		q2, ok2 := minQueue.Peek2ndFront().(HeapNode)
+		if !ok2 {
+			q2 = maxNode
+		}
+
+		d1, d2 := maxNode, maxNode
+		if k < len(data)-1 {
+			d1 = data[k]
+			d2 = data[k+1]
+		} else if k == len(data)-1 {
+			d1 = data[k]
+		}
+
+		compareList := []HeapNode{q1, q2, d1, d2}
+		minIdx := findMinIdx(compareList)
+		n1 := compareList[minIdx]
+
+		if minIdx < 2 {
+			minQueue.Dequeue()
+		} else {
+			k++
+		}
+
+		minIdx = findMinIdxExcept(compareList, minIdx)
+		n2 := compareList[minIdx]
+
+		if minIdx < 2 {
+			minQueue.Dequeue()
+		} else {
+			k++
+		}
 
 		newNode := HeapNode{
 			alphabet: "",
@@ -91,24 +131,47 @@ func Encoding2Stacks(file string) HeapNode {
 			right:    &n2,
 		}
 
-		second, ok := minStack.Peek2ndTop().(HeapNode)
-
-		if minStack.IsEmpty() || minStack.PeekTop().(HeapNode).weight > newNode.weight {
-			minStack.Push(newNode)
-		} else if !ok || second.weight > newNode.weight {
-			d1 := minStack.Pop()
-			minStack.Push(newNode)
-			minStack.Push(d1)
-		} else {
-			d1 := minStack.Pop()
-			d2 := minStack.Pop()
-			minStack.Push(newNode)
-			minStack.Push(d2)
-			minStack.Push(d1)
-		}
+		minQueue.Enqueue(newNode)
 	}
 
 	return root
+}
+
+var r = rand.New(rand.NewSource(time.Now().Unix()))
+
+// QuickSort sorts array in-place with randomized choices of pivot
+func quickSort(xs []HeapNode) {
+	if len(xs) <= 1 {
+		return
+	}
+
+	pivotPos := partition(xs, r.Intn(len(xs)))
+	quickSort(xs[0:pivotPos])
+	quickSort(xs[pivotPos+1:])
+}
+
+func partition(xs []HeapNode, pivotIdx int) int {
+	if len(xs) <= 1 {
+		return 0
+	}
+
+	swap(xs, 0, pivotIdx)
+
+	i := 0
+	for j := 1; j < len(xs); j++ {
+		if xs[j].weight < xs[0].weight {
+			swap(xs, i+1, j)
+			i++
+		}
+	}
+
+	swap(xs, 0, i)
+
+	return i
+}
+
+func swap(xs []HeapNode, thisIdx int, thatIdx int) {
+	xs[thisIdx], xs[thatIdx] = xs[thatIdx], xs[thisIdx]
 }
 
 // Encoding encodes the input alphabets into a Huffman tree
@@ -189,20 +252,30 @@ func minOf(a, b int) int {
 	return b
 }
 
-func popMin(stack1 *stack.Stack, stack2 *stack.Stack) HeapNode {
-	d1, ok1 := stack1.PeekTop().(HeapNode)
-	if !ok1 {
-		return stack2.Pop().(HeapNode)
+func findMinIdx(xs []HeapNode) int {
+	minIdx := -1
+	min := queue.GetMaxInt()
+
+	for i := 0; i < len(xs); i++ {
+		if xs[i].weight < min {
+			min = xs[i].weight
+			minIdx = i
+		}
 	}
 
-	d2, ok2 := stack2.PeekTop().(HeapNode)
-	if !ok2 {
-		return stack1.Pop().(HeapNode)
+	return minIdx
+}
+
+func findMinIdxExcept(xs []HeapNode, except int) int {
+	minIdx := -1
+	min := queue.GetMaxInt()
+
+	for i := 0; i < len(xs); i++ {
+		if i != except && xs[i].weight < min {
+			min = xs[i].weight
+			minIdx = i
+		}
 	}
 
-	if d1.weight < d2.weight {
-		return stack1.Pop().(HeapNode)
-	}
-
-	return stack2.Pop().(HeapNode)
+	return minIdx
 }
