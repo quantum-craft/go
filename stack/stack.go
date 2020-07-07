@@ -15,10 +15,6 @@ type Stack struct {
 	topIdx int
 }
 
-func (stack *Stack) GetData() []DataElement {
-	return stack.data
-}
-
 // MakeStack returns an empty stack
 func MakeStack() Stack {
 	return Stack{
