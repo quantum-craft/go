@@ -70,6 +70,16 @@ func (a ConcreteData) LessThan(i, j int) bool {
 	return false
 }
 
+// Get implements interface sort.Data
+func (a ConcreteData) Get(i int) interface{} {
+	return a.d[i]
+}
+
+// Set implements interface sort.Data
+func (a ConcreteData) Set(i int, data interface{}) {
+	a.d[i] = data.(HeapNode)
+}
+
 var maxNode HeapNode = HeapNode{
 	alphabet: "",
 	weight:   queue.GetMaxInt(),

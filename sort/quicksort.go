@@ -14,6 +14,8 @@ type Data interface {
 	Len() int
 	Range(i, j int) Data // Range is just like [i, j], j is not included
 	Swap(i, j int)
+	Get(i int) interface{}
+	Set(i int, data interface{})
 }
 
 // QuickSort sorts array in-place with randomized choices of pivot
