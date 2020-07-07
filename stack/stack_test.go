@@ -31,10 +31,15 @@ func TestStack(t *testing.T) {
 	}
 
 	for i := len(data) - 1; i >= 0; i-- {
+		peek := stack.PeekTop()
 		d := stack.Pop()
 
+		if d != peek {
+			t.Error("Stack PeekTop() error !")
+		}
+
 		if d != data[i] {
-			t.Error("Stack error !")
+			t.Error("Stack Pop() error !")
 		}
 	}
 }

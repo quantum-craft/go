@@ -36,3 +36,12 @@ func (stack *Stack) Pop() int {
 
 	return ret
 }
+
+// PeekTop returns the top element without poping it
+func (stack *Stack) PeekTop() int {
+	if stack.topIdx < 0 {
+		return -1 // data being -1 means empty
+	}
+
+	return stack.data[stack.topIdx]
+}
