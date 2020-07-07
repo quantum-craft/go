@@ -2,7 +2,6 @@ package huffman
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 	"strconv"
 
@@ -93,8 +92,6 @@ func Encoding2Stacks(file string) HeapNode {
 		}
 
 		second, ok := minStack.Peek2ndTop().(HeapNode)
-
-		fmt.Println(minStack.GetData())
 
 		if minStack.IsEmpty() || minStack.PeekTop().(HeapNode).weight > newNode.weight {
 			minStack.Push(newNode)
