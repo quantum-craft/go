@@ -9,16 +9,30 @@ func knapsack(values []int, weights []int, W int) int {
 	}
 
 	for i := 1; i <= n; i++ {
-		for j := 0; j <= W; j++ {
-			if j < weights[i-1] {
-				V[i][j] = V[i-1][j]
+		for x := 0; x <= W; x++ {
+			if x < weights[i-1] {
+				V[i][x] = V[i-1][x]
 			} else {
-				V[i][j] = max(V[i-1][j], V[i-1][j-weights[i-1]]+values[i-1])
+				V[i][x] = max(V[i-1][x], V[i-1][x-weights[i-1]]+values[i-1])
 			}
 		}
 	}
 
 	return V[n][W]
+}
+
+func sliceIncreasing(xs []int) bool {
+	if len(xs) <= 1 {
+		return true
+	}
+
+	for i := 0; i < len(xs)-1; i++ {
+		if xs[i+1] < xs[i] {
+			return false
+		}
+	}
+
+	return true
 }
 
 func max(a, b int) int {
