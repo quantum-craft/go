@@ -14,8 +14,7 @@ func TestKnapsackSmall(t *testing.T) {
 
 	scanner := bufio.NewScanner(f)
 
-	values := []int{}
-	weights := []int{}
+	items := []item{}
 	W := 0
 	n := 0
 
@@ -33,32 +32,26 @@ func TestKnapsackSmall(t *testing.T) {
 			v, _ := strconv.Atoi(fields[0])
 			w, _ := strconv.Atoi(fields[1])
 
-			values = append(values, v)
-			weights = append(weights, w)
+			items = append(items, item{value: v, weight: w})
 		}
 	}
 
-	if len(values) != n {
+	if len(items) != n {
 		t.Error("Input file error !")
 	}
 
-	if len(weights) != n {
-		t.Error("Input file error !")
-	}
-
-	if knapsack(values, weights, W) != 2493893 {
+	if knapsack(items, W) != 2493893 {
 		t.Error("TestKnapsackSmall error !")
 	}
 }
 
-func TooLongTestKnapsackBig(t *testing.T) {
+func TestKnapsackBig(t *testing.T) {
 	f, _ := os.Open("../data/knapsack_big.txt")
 	defer f.Close()
 
 	scanner := bufio.NewScanner(f)
 
-	values := []int{}
-	weights := []int{}
+	items := []item{}
 	W := 0
 	n := 0
 
@@ -76,20 +69,15 @@ func TooLongTestKnapsackBig(t *testing.T) {
 			v, _ := strconv.Atoi(fields[0])
 			w, _ := strconv.Atoi(fields[1])
 
-			values = append(values, v)
-			weights = append(weights, w)
+			items = append(items, item{value: v, weight: w})
 		}
 	}
 
-	if len(values) != n {
+	if len(items) != n {
 		t.Error("Input file error !")
 	}
 
-	if len(weights) != n {
-		t.Error("Input file error !")
-	}
-
-	if knapsack(values, weights, W) != 4243395 {
+	if knapsack(items, W) != 4243395 {
 		t.Error("TestKnapsackSmall error !")
 	}
 }
