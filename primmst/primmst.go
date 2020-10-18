@@ -64,7 +64,7 @@ func PrimMST(vertices []Vertex, edges []Edge, startIdx int) int {
 		}
 
 		newCost := maxInt
-		heap.Insert(minheap, heapNode{vert: &vertices[i], minCost: &newCost})
+		minheap.Insert(heapNode{vert: &vertices[i], minCost: &newCost})
 	}
 
 	v := vertices[startIdx]
@@ -73,11 +73,11 @@ func PrimMST(vertices []Vertex, edges []Edge, startIdx int) int {
 		h := vertices[otherVert(e, v.VIdx)].HeapIdx
 
 		if h != -1 {
-			heap.Update(minheap, h, e.Cost)
+			minheap.Update(h, e.Cost)
 		}
 	}
 
-	n, ok := heap.ExtractMin(minheap).(heapNode)
+	n, ok := minheap.ExtractMin().(heapNode)
 	for ok == true {
 		mstcost += *n.minCost
 
@@ -85,11 +85,11 @@ func PrimMST(vertices []Vertex, edges []Edge, startIdx int) int {
 			e := v.Edges[j]
 			h := vertices[otherVert(e, v.VIdx)].HeapIdx
 			if h != -1 {
-				heap.Update(minheap, h, e.Cost)
+				minheap.Update(h, e.Cost)
 			}
 		}
 
-		n, ok = heap.ExtractMin(minheap).(heapNode)
+		n, ok = minheap.ExtractMin().(heapNode)
 	}
 
 	return mstcost

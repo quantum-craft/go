@@ -59,9 +59,9 @@ func Dijkstra(vertices []Vertex, edges []Edge, startIdx int) {
 	minheap := heap.MakeMinHeap()
 
 	vertices[startIdx].Score = 0 // source
-	heap.Insert(minheap, Node{Key: &vertices[startIdx]})
+	minheap.Insert(Node{Key: &vertices[startIdx]})
 
-	n, ok := heap.ExtractMin(minheap).(Node)
+	n, ok := minheap.ExtractMin().(Node)
 	for ok == true {
 		n.Key.Explored = true
 		for i, edges := 0, n.Key.Edges; i < len(n.Key.Edges); i++ {
@@ -70,14 +70,14 @@ func Dijkstra(vertices []Vertex, edges []Edge, startIdx int) {
 				// check whether Head exists in heap
 				if edges[i].Head.heapIdx == -1 {
 					edges[i].Head.Score = n.Key.Score + edges[i].Weight
-					heap.Insert(minheap, Node{Key: edges[i].Head})
+					minheap.Insert(Node{Key: edges[i].Head})
 				} else {
-					heap.Update(minheap, edges[i].Head.heapIdx, n.Key.Score+edges[i].Weight)
+					minheap.Update(edges[i].Head.heapIdx, n.Key.Score+edges[i].Weight)
 				}
 			}
 		}
 
-		n, ok = heap.ExtractMin(minheap).(Node)
+		n, ok = minheap.ExtractMin().(Node)
 	}
 }
 

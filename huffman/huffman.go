@@ -122,7 +122,7 @@ func EncodingWithQueue(file string) HeapNode {
 	var root HeapNode
 	for {
 		if k == data.Len() && minQueue.QueueSize() == 1 {
-			root = minQueue.Dequeue().(HeapNode)
+			root = minQueue.PopFront().(HeapNode)
 			break
 		}
 
@@ -148,7 +148,7 @@ func EncodingWithQueue(file string) HeapNode {
 		n1 := compareList[minIdx]
 
 		if minIdx < 2 {
-			minQueue.Dequeue()
+			minQueue.PopFront()
 		} else {
 			k++
 		}
@@ -157,7 +157,7 @@ func EncodingWithQueue(file string) HeapNode {
 		n2 := compareList[minIdx]
 
 		if minIdx < 2 {
-			minQueue.Dequeue()
+			minQueue.PopFront()
 		} else {
 			k++
 		}
@@ -169,7 +169,7 @@ func EncodingWithQueue(file string) HeapNode {
 			right:    &n2,
 		}
 
-		minQueue.Enqueue(newNode)
+		minQueue.PushBack(newNode)
 	}
 
 	return root
@@ -192,7 +192,7 @@ func Encoding(file string) HeapNode {
 		i, _ := strconv.Atoi(line)
 
 		if k > 0 {
-			heap.Insert(minheap, HeapNode{
+			minheap.Insert(HeapNode{
 				alphabet: string(k),
 				weight:   i,
 				left:     nil,
@@ -205,15 +205,15 @@ func Encoding(file string) HeapNode {
 
 	var root HeapNode
 	for {
-		n1, _ := heap.ExtractMin(minheap).(HeapNode)
-		n2, haveTwo := heap.ExtractMin(minheap).(HeapNode)
+		n1, _ := minheap.ExtractMin().(HeapNode)
+		n2, haveTwo := minheap.ExtractMin().(HeapNode)
 
 		if haveTwo == false {
 			root = n1
 			break
 		}
 
-		heap.Insert(minheap, HeapNode{
+		minheap.Insert(HeapNode{
 			alphabet: "",
 			weight:   n1.weight + n2.weight,
 			left:     &n1,

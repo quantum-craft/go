@@ -30,18 +30,35 @@ func GetMaxInt() int {
 	return maxInt
 }
 
-// Enqueue enqueues
-func (q *Queue) Enqueue(d DataElement) {
+// PushBack enqueues from back
+func (q *Queue) PushBack(d DataElement) {
 	q.data.PushBack(d)
 }
 
-// Dequeue dequeues
-func (q *Queue) Dequeue() DataElement {
+// PushFront enqueues from front
+func (q *Queue) PushFront(d DataElement) {
+	q.data.PushFront(d)
+}
+
+// PopFront dequeues from front
+func (q *Queue) PopFront() DataElement {
 	if q.data.Len() == 0 {
 		return maxInt // data being maxInt means empty
 	}
 
 	e := q.data.Front()
+	q.data.Remove(e)
+
+	return e.Value
+}
+
+// PopBack dequeues from front
+func (q *Queue) PopBack() DataElement {
+	if q.data.Len() == 0 {
+		return maxInt // data being maxInt means empty
+	}
+
+	e := q.data.Back()
 	q.data.Remove(e)
 
 	return e.Value

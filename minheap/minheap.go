@@ -23,7 +23,7 @@ func MakeMinHeap() MinHeap {
 }
 
 // Insert will insert the node at the bottom and re-heapify
-func Insert(minheap MinHeap, n HeapNode) {
+func (minheap *MinHeap) Insert(n HeapNode) {
 	lastEmpty, heap := minheap.lastEmpty, minheap.heap
 
 	if *lastEmpty == len(*heap) {
@@ -36,12 +36,12 @@ func Insert(minheap MinHeap, n HeapNode) {
 
 	swapNode(heap, *lastEmpty-1, *lastEmpty-1)
 
-	bubbleUp(*lastEmpty, minheap)
+	minheap.bubbleUp(*lastEmpty)
 }
 
 // ExtractMin will extract the minimum member, replace the minimum pos with the last member,
 // and re-heapify
-func ExtractMin(minheap MinHeap) HeapNode {
+func (minheap *MinHeap) ExtractMin() HeapNode {
 	lastEmpty, heap := minheap.lastEmpty, minheap.heap
 
 	if *lastEmpty == 0 {
@@ -54,7 +54,7 @@ func ExtractMin(minheap MinHeap) HeapNode {
 	*lastEmpty--
 	swapNode(heap, 0, *lastEmpty)
 
-	bubbleDown(1, minheap)
+	minheap.bubbleDown(1)
 
 	ret.SetHeapIdx(-1) // bye
 
@@ -62,7 +62,7 @@ func ExtractMin(minheap MinHeap) HeapNode {
 }
 
 // Update updates cost if it is smaller
-func Update(minheap MinHeap, heapIdx int, newCost int) {
+func (minheap *MinHeap) Update(heapIdx int, newCost int) {
 	lastEmpty, heap := minheap.lastEmpty, minheap.heap
 
 	if heapIdx >= *lastEmpty {
@@ -73,12 +73,12 @@ func Update(minheap MinHeap, heapIdx int, newCost int) {
 		(*heap)[heapIdx].SetCost(newCost)
 
 		// new cost is smaller, re-heapify
-		bubbleUp(heapIdx+1, minheap)
+		minheap.bubbleUp(heapIdx + 1)
 	}
 }
 
 // PeekAt provides the element at heapIdx
-func PeekAt(minheap MinHeap, heapIdx int) HeapNode {
+func (minheap *MinHeap) PeekAt(heapIdx int) HeapNode {
 	lastEmpty, heap := minheap.lastEmpty, minheap.heap
 
 	if heapIdx >= *lastEmpty {
@@ -90,7 +90,7 @@ func PeekAt(minheap MinHeap, heapIdx int) HeapNode {
 }
 
 // PeekMin provides the min element without poping it
-func PeekMin(minheap MinHeap) HeapNode {
+func (minheap *MinHeap) PeekMin() HeapNode {
 	lastEmpty, heap := minheap.lastEmpty, minheap.heap
 
 	if *lastEmpty == 0 {
@@ -103,7 +103,7 @@ func PeekMin(minheap MinHeap) HeapNode {
 
 // Delete will delete the element at heapIdx and replace it with the last element
 // re-heapify
-func Delete(minheap MinHeap, heapIdx int) {
+func (minheap *MinHeap) Delete(heapIdx int) {
 	lastEmpty, heap := minheap.lastEmpty, minheap.heap
 
 	if heapIdx >= *lastEmpty {
@@ -114,16 +114,16 @@ func Delete(minheap MinHeap, heapIdx int) {
 	swapNode(heap, heapIdx, *lastEmpty)
 
 	if (*heap)[heapIdx].GetCost() > (*heap)[*lastEmpty].GetCost() {
-		bubbleDown(heapIdx+1, minheap)
+		minheap.bubbleDown(heapIdx + 1)
 	} else {
-		bubbleUp(heapIdx+1, minheap)
+		minheap.bubbleUp(heapIdx + 1)
 	}
 
 	(*heap)[*lastEmpty].SetHeapIdx(-1) // bye
 }
 
 // pos is one based index
-func bubbleUp(pos int, minheap MinHeap) {
+func (minheap *MinHeap) bubbleUp(pos int) {
 	heap := minheap.heap
 	for p := pos; p > 1 && (*heap)[p/2-1].GetCost() >= (*heap)[p-1].GetCost(); p = p / 2 {
 		swapNode(heap, p-1, p/2-1)
@@ -131,7 +131,7 @@ func bubbleUp(pos int, minheap MinHeap) {
 }
 
 // pos is one based index
-func bubbleDown(pos int, minheap MinHeap) {
+func (minheap *MinHeap) bubbleDown(pos int) {
 	lastEmpty, heap := minheap.lastEmpty, minheap.heap
 
 	p := pos
@@ -140,7 +140,7 @@ func bubbleDown(pos int, minheap MinHeap) {
 			return
 		}
 
-		here := downHere(p, minheap)
+		here := minheap.downHere(p)
 
 		if here == p {
 			return
@@ -152,7 +152,7 @@ func bubbleDown(pos int, minheap MinHeap) {
 	}
 }
 
-func downHere(p int, minheap MinHeap) int {
+func (minheap *MinHeap) downHere(p int) int {
 	lastEmpty, heap := minheap.lastEmpty, minheap.heap
 
 	if p*2 >= *lastEmpty {

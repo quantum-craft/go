@@ -77,14 +77,14 @@ func TestHeapSortLarge(t *testing.T) {
 	minheap := MakeMinHeap()
 
 	for i := 0; i < len(numbers); i++ {
-		Insert(minheap, Node{Key: &Vertex{Score: numbers[i]}})
+		minheap.Insert(Node{Key: &Vertex{Score: numbers[i]}})
 	}
 
 	ans := make([]int, 0)
-	n, ok := ExtractMin(minheap).(Node)
+	n, ok := minheap.ExtractMin().(Node)
 	for ok == true {
 		ans = append(ans, n.Key.Score)
-		n, ok = ExtractMin(minheap).(Node)
+		n, ok = minheap.ExtractMin().(Node)
 	}
 
 	if !SliceIncreasing(ans) {
