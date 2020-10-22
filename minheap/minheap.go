@@ -61,7 +61,28 @@ func (minheap *MinHeap) ExtractMin() HeapNode {
 	return ret
 }
 
-// Update updates cost if it is smaller
+// ForceUpdate updates cost and re-heapify
+func (minheap *MinHeap) ForceUpdate(heapIdx int, newCost int) {
+	lastEmpty, heap := minheap.lastEmpty, minheap.heap
+
+	if heapIdx >= *lastEmpty {
+		return
+	}
+
+	if newCost < (*heap)[heapIdx].GetCost() {
+		(*heap)[heapIdx].SetCost(newCost)
+
+		// new cost is smaller, re-heapify
+		minheap.bubbleUp(heapIdx + 1)
+	} else {
+		(*heap)[heapIdx].SetCost(newCost)
+
+		// new cost is larger, re-heapify
+		minheap.bubbleDown(heapIdx + 1)
+	}
+}
+
+// Update updates cost when it is smaller
 func (minheap *MinHeap) Update(heapIdx int, newCost int) {
 	lastEmpty, heap := minheap.lastEmpty, minheap.heap
 
