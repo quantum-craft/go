@@ -20,25 +20,25 @@ func TestBinarySearchTree(t *testing.T) {
 	insert(&root, -10)
 	insert(&root, -20)
 
-	fmt.Println(search(root, 6))
-	fmt.Println(search(root, 20))
-	fmt.Println(search(root, -10))
-	fmt.Println(search(root, 8))
-	fmt.Println(search(root, 3))
-	fmt.Println(search(root, 30))
-	fmt.Println(search(root, 17))
-	fmt.Println(search(root, 0))
-	fmt.Println(search(root, 1))
+	fmt.Println(find(&root, 6, nil, nil))
+	fmt.Println(find(&root, 20, nil, nil))
+	fmt.Println(find(&root, -10, nil, nil))
+	fmt.Println(find(&root, 8, nil, nil))
+	fmt.Println(find(&root, 3, nil, nil))
+	fmt.Println(find(&root, 30, nil, nil))
+	fmt.Println(find(&root, 17, nil, nil))
+	fmt.Println(find(&root, 0, nil, nil))
+	fmt.Println(find(&root, 1, nil, nil))
 
 	insert(&root, 30)
 	insert(&root, 17)
 	insert(&root, 0)
 	insert(&root, 1)
 
-	fmt.Println(search(root, 30))
-	fmt.Println(search(root, 17))
-	fmt.Println(search(root, 0))
-	fmt.Println(search(root, 1))
+	fmt.Println(find(&root, 30, nil, nil))
+	fmt.Println(find(&root, 17, nil, nil))
+	fmt.Println(find(&root, 0, nil, nil))
+	fmt.Println(find(&root, 1, nil, nil))
 }
 
 func TestBinarySearchTreePrint(t *testing.T) {

@@ -2,6 +2,7 @@ package huffman
 
 import (
 	"bufio"
+	"fmt"
 	"math/rand"
 	"os"
 	"strconv"
@@ -193,7 +194,7 @@ func Encoding(file string) HeapNode {
 
 		if k > 0 {
 			minheap.Insert(HeapNode{
-				alphabet: string(k),
+				alphabet: fmt.Sprint(k),
 				weight:   i,
 				left:     nil,
 				right:    nil,

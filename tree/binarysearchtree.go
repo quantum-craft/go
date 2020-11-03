@@ -1,60 +1,91 @@
 package binarysearchtree
 
-import "fmt"
-
 type node struct {
-	Value int
-	Left  *node
-	Right *node
+	val   int
+	left  *node
+	right *node
 }
 
-func insert(n **node, v int) {
-	if *n == nil {
-		*n = &node{Value: v, Left: nil, Right: nil}
-	} else if v < (*n).Value {
-		insert(&(*n).Left, v)
+func delete(n **node, val int) bool {
+	ptr, leftParent, rightParent := find(n, val, nil, nil)
+
+	if ptr == nil {
+		return false
+	}
+
+	if ptr.left == nil {
+		if leftParent != nil {
+			leftParent.left = ptr.right
+		} else if rightParent != nil {
+			rightParent.right = ptr.right
+		}
 	} else {
-		insert(&(*n).Right, v)
-	}
-}
-
-func print(n *node) {
-	if n != nil {
-		print(n.Left)
-		fmt.Println(n.Value)
-		print(n.Right)
-	}
-}
-
-func printPreorder(n *node) {
-	if n != nil {
-		fmt.Println(n.Value)
-		print(n.Left)
-		print(n.Right)
-	}
-}
-
-func printPostorder(n *node) {
-	if n != nil {
-		print(n.Left)
-		print(n.Right)
-		fmt.Println(n.Value)
-	}
-}
-
-func search(n *node, v int) bool {
-	if n != nil {
-		if n.Value == v {
-			fmt.Print("Got it: ")
-			fmt.Print(n.Value)
-			fmt.Print(" ")
-			return true
-		} else if v < n.Value {
-			return search(n.Left, v)
+		right, rightParent := findRightmost(ptr.left, nil)
+		ptr.val = right.val
+		if rightParent != nil {
+			rightParent.right = right.left
 		} else {
-			return search(n.Right, v)
+			ptr.left = right.left
 		}
 	}
 
-	return false
+	return true
+}
+
+func findRightmost(n *node, rightParent *node) (*node, *node) {
+	if n.right == nil {
+		return n, rightParent
+	}
+
+	return findRightmost(n.right, n)
+}
+
+func validateBST(n *node) bool {
+	if n == nil {
+		return true
+	} else if n.left == n.right {
+		return true
+	}
+
+	if n.left != nil && n.left.val > n.val {
+		return false
+	}
+
+	if n.right != nil && n.right.val <= n.val {
+		return false
+	}
+
+	return validateBST(n.left) && validateBST(n.right)
+}
+
+func find(n **node, val int, leftParent, rightParent *node) (*node, *node, *node) {
+	if *n == nil {
+		return nil, leftParent, rightParent
+	}
+
+	if (*n).val < val {
+		return find(&(*n).right, val, nil, *n)
+	} else if (*n).val > val {
+		return find(&(*n).left, val, *n, nil)
+	} else {
+		return *n, leftParent, rightParent
+	}
+}
+
+func insert(n **node, val int) {
+	if *n == nil {
+		(*n) = &node{
+			val:   val,
+			left:  nil,
+			right: nil,
+		}
+
+		return
+	}
+
+	if (*n).val < val {
+		insert(&((*n).right), val)
+	} else {
+		insert(&((*n).left), val)
+	}
 }
