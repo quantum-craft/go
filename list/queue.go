@@ -21,10 +21,10 @@ func (q *queue) front() int {
 
 func (q *queue) empty() bool {
 	if q.list.Len() > 0 {
-		return true
+		return false
 	}
 
-	return false
+	return true
 }
 
 func (q *queue) pushBack(d int) {
