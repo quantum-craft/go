@@ -1,13 +1,5 @@
 package sort
 
-import (
-	"math/rand"
-	"time"
-)
-
-// package-wise var
-var r = rand.New(rand.NewSource(time.Now().Unix()))
-
 // Data is the aggregation of data (ex: []int)
 type Data interface {
 	LessThan(i, j int) bool

@@ -126,3 +126,38 @@ func TestQuickSortLarge(t *testing.T) {
 		t.Error("QuickSort error !")
 	}
 }
+
+func TestQuickSort2Large(t *testing.T) {
+	lineEnding := "\n"
+
+	if runtime.GOOS == "windows" {
+		lineEnding = "\r\n"
+	} else {
+		lineEnding = "\n"
+	}
+
+	f, err := os.Open("../data/QuickSortNumbers.txt")
+	if err != nil {
+		fmt.Println("error opening file= ", err)
+		os.Exit(1)
+	}
+
+	r := bufio.NewReader(f)
+	line, err := r.ReadString('\n')
+
+	numbers := make([]int, 0)
+
+	for err == nil {
+		i, _ := strconv.Atoi(strings.TrimSuffix(line, lineEnding))
+
+		numbers = append(numbers, i)
+
+		line, err = r.ReadString('\n')
+	}
+
+	quickSort(numbers)
+
+	if !SliceIncreasing(numbers) {
+		t.Error("QuickSort error !")
+	}
+}
