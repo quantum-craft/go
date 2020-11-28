@@ -12,7 +12,7 @@ var r = rand.New(rand.NewSource(time.Now().Unix()))
 type Data interface {
 	LessThan(i, j int) bool
 	Len() int
-	Range(i, j int) Data // Range is just like [i, j], j is not included
+	Range(i, j int) Data // Range is just like [i, j), j is not included
 	Swap(i, j int)
 	Get(i int) interface{}
 	Set(i int, data interface{})
