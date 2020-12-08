@@ -51,4 +51,5 @@ func main2() {
 var r = rand.New(rand.NewSource(time.Now().Unix()))
 
 func main() {
+	fmt.Println("hello world")
 }
