@@ -155,7 +155,7 @@ func TestQuickSort2Large(t *testing.T) {
 		line, err = r.ReadString('\n')
 	}
 
-	quickSort(numbers)
+	quickSort(numbers, 0, len(numbers)-1)
 
 	if !SliceIncreasing(numbers) {
 		t.Error("QuickSort error !")

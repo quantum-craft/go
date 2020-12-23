@@ -7,32 +7,28 @@ import (
 
 var r = rand.New(rand.NewSource(time.Now().Unix()))
 
-func quickSort(xs []int) {
-	if len(xs) <= 1 {
+func quickSort(xs []int, low, high int) {
+	if high-low+1 <= 1 {
 		return
 	}
 
-	pivotPos := partition(xs, r.Intn(len(xs)))
-	quickSort(xs[0:pivotPos])
-	quickSort(xs[pivotPos+1 : len(xs)])
+	pivotPos := partition(xs, low+r.Intn(high-low+1), low, high)
+	quickSort(xs, low, pivotPos-1)
+	quickSort(xs, pivotPos+1, high)
 }
 
-func partition(xs []int, pivotIdx int) int {
-	if len(xs) <= 1 {
-		return 0
-	}
+func partition(xs []int, pIdx int, low, high int) int {
+	swap(xs, low, pIdx)
 
-	swap(xs, 0, pivotIdx)
-
-	i := 0
-	for j := 1; j < len(xs); j++ {
-		if xs[j] < xs[0] {
+	i := low
+	for j := low; j <= high; j++ {
+		if xs[j] < xs[low] {
 			swap(xs, i+1, j)
 			i++
 		}
 	}
 
-	swap(xs, 0, i)
+	swap(xs, low, i)
 
 	return i
 }
