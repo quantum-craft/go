@@ -17,6 +17,23 @@ func quickSort(xs []int, low, high int) {
 	quickSort(xs, pivotPos+1, high)
 }
 
+func findKth(xs []int, k int, low, high int) int {
+	target := low + k - 1
+	for high > low {
+		mid := partition(xs, target, low, high)
+
+		if mid == target {
+			return mid
+		} else if mid < target {
+			low = mid + 1
+		} else {
+			high = mid - 1
+		}
+	}
+
+	return low
+}
+
 func partition(xs []int, pIdx int, low, high int) int {
 	swap(xs, low, pIdx)
 

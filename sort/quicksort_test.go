@@ -161,3 +161,48 @@ func TestQuickSort2Large(t *testing.T) {
 		t.Error("QuickSort error !")
 	}
 }
+
+func TestFindKthLarge(t *testing.T) {
+	lineEnding := "\n"
+
+	if runtime.GOOS == "windows" {
+		lineEnding = "\r\n"
+	} else {
+		lineEnding = "\n"
+	}
+
+	f, err := os.Open("../data/QuickSortNumbers.txt")
+	if err != nil {
+		fmt.Println("error opening file= ", err)
+		os.Exit(1)
+	}
+
+	r := bufio.NewReader(f)
+	line, err := r.ReadString('\n')
+
+	numbers := make([]int, 0)
+
+	for err == nil {
+		i, _ := strconv.Atoi(strings.TrimSuffix(line, lineEnding))
+
+		numbers = append(numbers, i)
+
+		line, err = r.ReadString('\n')
+	}
+
+	kthIdx1 := findKth(numbers, 1023, 0, len(numbers)-1)
+	kthIdx2 := findKth(numbers, 2, 0, len(numbers)-1)
+	kthIdx3 := findKth(numbers, len(numbers)/2, 0, len(numbers)-1)
+
+	if kthIdx1 != 1022 || numbers[kthIdx1] != 1022 {
+		t.Error("findKth error !")
+	}
+
+	if kthIdx2 != 1 || numbers[kthIdx2] != 1 {
+		t.Error("findKth error !")
+	}
+
+	if kthIdx3 != len(numbers)/2-1 || numbers[kthIdx3] != 4999 {
+		t.Error("findKth error !")
+	}
+}
