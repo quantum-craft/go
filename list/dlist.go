@@ -28,7 +28,7 @@ func (l *dlist) empty() bool {
 	return false
 }
 
-func (l *dlist) getFront() *node {
+func (l *dlist) front() *node {
 	if !l.empty() {
 		return l.head.next
 	}
@@ -36,7 +36,7 @@ func (l *dlist) getFront() *node {
 	return nil
 }
 
-func (l *dlist) getBack() *node {
+func (l *dlist) back() *node {
 	if !l.empty() {
 		return l.tail.prev
 	}
