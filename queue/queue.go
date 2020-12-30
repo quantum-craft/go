@@ -4,11 +4,6 @@ import (
 	"container/list"
 )
 
-const maxUint = ^uint(0)         // 1111...1
-const minUint = uint(0)          // 0000...0
-const maxInt = int(maxUint >> 1) // 0111...1
-const minInt = -maxInt - 1       // 1000...0
-
 // DataElement is used as interface{}
 type DataElement interface {
 }
@@ -18,16 +13,20 @@ type Queue struct {
 	data *list.List
 }
 
-// MakeQueue creates a new queue
-func MakeQueue() Queue {
-	return Queue{
+// NewQueue creates a new queue
+func NewQueue() *Queue {
+	return &Queue{
 		data: list.New(),
 	}
 }
 
-// GetMaxInt returns maxInt of queue package
-func GetMaxInt() int {
-	return maxInt
+// Empty checks if the queue is empty
+func (q *Queue) Empty() bool {
+	if q.data.Len() == 0 {
+		return true
+	}
+
+	return false
 }
 
 // PushBack enqueues from back
@@ -42,8 +41,8 @@ func (q *Queue) PushFront(d DataElement) {
 
 // PopFront dequeues from front
 func (q *Queue) PopFront() DataElement {
-	if q.data.Len() == 0 {
-		return maxInt // data being maxInt means empty
+	if q.Empty() == true {
+		return nil
 	}
 
 	e := q.data.Front()
@@ -54,8 +53,8 @@ func (q *Queue) PopFront() DataElement {
 
 // PopBack dequeues from front
 func (q *Queue) PopBack() DataElement {
-	if q.data.Len() == 0 {
-		return maxInt // data being maxInt means empty
+	if q.Empty() == true {
+		return nil
 	}
 
 	e := q.data.Back()
@@ -64,25 +63,25 @@ func (q *Queue) PopBack() DataElement {
 	return e.Value
 }
 
-// PeekFront peeks the first element
-func (q *Queue) PeekFront() DataElement {
-	if q.data.Len() == 0 {
-		return maxInt // data being maxInt means empty
+// Front peeks the first element
+func (q *Queue) Front() DataElement {
+	if q.Empty() == true {
+		return nil
 	}
 
 	return q.data.Front().Value
 }
 
-// Peek2ndFront peeks the second element
-func (q *Queue) Peek2ndFront() DataElement {
+// SecondFront peeks the second element
+func (q *Queue) SecondFront() DataElement {
 	if q.data.Len() <= 1 {
-		return maxInt // data being maxInt means empty
+		return nil
 	}
 
 	return q.data.Front().Next().Value
 }
 
-// QueueSize returns the size of queue
+// QueueSize gives the size of underlying queue
 func (q *Queue) QueueSize() int {
 	return q.data.Len()
 }
