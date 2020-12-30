@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/quantum-craft/go/constant"
 	heap "github.com/quantum-craft/go/minheap"
 )
 
@@ -48,11 +49,6 @@ func (n Node) GetHeapIdx() int {
 func (n Node) SetHeapIdx(idx int) {
 	n.Key.heapIdx = idx
 }
-
-const maxUint = ^uint(0)         // 1111...1
-const minUint = uint(0)          // 0000...0
-const maxInt = int(maxUint >> 1) // 0111...1
-const minInt = -maxInt - 1       // 1000...0
 
 // Dijkstra computes shortest path from startIdx to all other reachable nodes
 func Dijkstra(vertices []Vertex, edges []Edge, startIdx int) {
@@ -109,7 +105,7 @@ func ConstructGraph(filePath string) ([]Vertex, []Edge) {
 			if vertices[tail].Edges == nil {
 				vertices[tail].idx = tail
 				vertices[tail].heapIdx = -1 // not in heap yet
-				vertices[tail].Score = maxInt
+				vertices[tail].Score = constant.MaxInt
 				vertices[tail].Explored = false
 				vertices[tail].Edges = make([]*Edge, 0)
 			}
@@ -117,7 +113,7 @@ func ConstructGraph(filePath string) ([]Vertex, []Edge) {
 			if vertices[head].Edges == nil {
 				vertices[head].idx = head
 				vertices[head].heapIdx = -1 // not in heap yet
-				vertices[head].Score = maxInt
+				vertices[head].Score = constant.MaxInt
 				vertices[head].Explored = false
 				vertices[head].Edges = make([]*Edge, 0)
 			}

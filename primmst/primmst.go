@@ -1,11 +1,9 @@
 package primmst
 
-import heap "github.com/quantum-craft/go/minheap"
-
-const maxUint = ^uint(0)         // 1111...1
-const minUint = uint(0)          // 0000...0
-const maxInt = int(maxUint >> 1) // 0111...1
-const minInt = -maxInt - 1       // 1000...0
+import (
+	"github.com/quantum-craft/go/constant"
+	heap "github.com/quantum-craft/go/minheap"
+)
 
 // Vertex is used for undirected graph in Prim's mst algorithm
 type Vertex struct {
@@ -63,7 +61,7 @@ func PrimMST(vertices []Vertex, edges []Edge, startIdx int) int {
 			continue
 		}
 
-		newCost := maxInt
+		newCost := constant.MaxInt
 		minheap.Insert(heapNode{vert: &vertices[i], minCost: &newCost})
 	}
 

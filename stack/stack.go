@@ -1,10 +1,5 @@
 package stack
 
-const maxUint = ^uint(0)         // 1111...1
-const minUint = uint(0)          // 0000...0
-const maxInt = int(maxUint >> 1) // 0111...1
-const minInt = -maxInt - 1       // 1000...0
-
 // DataElement is used to store data in stack
 type DataElement interface {
 }
@@ -34,10 +29,9 @@ func (stack *Stack) Push(d DataElement) {
 }
 
 // Pop returns the top element
-// Notice that data being maxInt means empty
 func (stack *Stack) Pop() DataElement {
 	if stack.topIdx < 0 {
-		return maxInt // data being maxInt means empty
+		return nil
 	}
 
 	ret := (stack.data)[stack.topIdx]
@@ -49,7 +43,7 @@ func (stack *Stack) Pop() DataElement {
 // PeekTop returns the top element without poping it
 func (stack *Stack) PeekTop() DataElement {
 	if stack.topIdx < 0 {
-		return maxInt // data being maxInt means empty
+		return nil
 	}
 
 	return stack.data[stack.topIdx]
@@ -58,7 +52,7 @@ func (stack *Stack) PeekTop() DataElement {
 // Peek2ndTop returns the second top element without poping it
 func (stack *Stack) Peek2ndTop() DataElement {
 	if stack.topIdx <= 0 {
-		return maxInt // data being maxInt means empty
+		return nil
 	}
 
 	return stack.data[stack.topIdx-1]
@@ -66,7 +60,7 @@ func (stack *Stack) Peek2ndTop() DataElement {
 
 // IsEmpty tell whether the stack is empty
 func (stack *Stack) IsEmpty() bool {
-	if stack.PeekTop() != maxInt {
+	if stack.topIdx < 0 {
 		return false
 	}
 

@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+
+	"github.com/quantum-craft/go/constant"
 )
 
 func minTransfers(transactions [][]int) int {
@@ -32,7 +34,7 @@ func dfs(i int, balance []int) int {
 		return dfs(i+1, balance)
 	}
 
-	minTrans := maxInt
+	minTrans := constant.MaxInt
 
 	for j := i + 1; j < len(balance); j++ {
 		if balance[i]*balance[j] < 0 {
@@ -58,11 +60,6 @@ func min(a, b int) int {
 
 	return b
 }
-
-const maxUint = ^uint(0)         // 1111...1
-const minUint = uint(0)          // 0000...0
-const maxInt = int(maxUint >> 1) // 0111...1
-const minInt = -maxInt - 1       // 1000...0
 
 func main() {
 	balance := []int{-8, -6, -5, -4, -2, -1, -1, 2, 3, 3, 3, 4, 6, 6}

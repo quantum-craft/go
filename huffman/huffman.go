@@ -8,15 +8,12 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/quantum-craft/go/constant"
+
 	heap "github.com/quantum-craft/go/minheap"
 	queue "github.com/quantum-craft/go/queue"
 	sort "github.com/quantum-craft/go/sort"
 )
-
-const maxUint = ^uint(0)         // 1111...1
-const minUint = uint(0)          // 0000...0
-const maxInt = int(maxUint >> 1) // 0111...1
-const minInt = -maxInt - 1       // 1000...0
 
 // HeapNode serves both purposes: node of min-heap and node of Huffman tree
 type HeapNode struct {
@@ -88,7 +85,7 @@ func (a ConcreteData) Set(i int, data interface{}) {
 
 var maxNode HeapNode = HeapNode{
 	alphabet: "",
-	weight:   maxInt,
+	weight:   constant.MaxInt,
 	left:     nil,
 	right:    nil,
 }
@@ -263,7 +260,7 @@ func minOf(a, b int) int {
 
 func findMinIdx(xs []HeapNode) int {
 	minIdx := -1
-	min := maxInt
+	min := constant.MaxInt
 
 	for i := 0; i < len(xs); i++ {
 		if xs[i].weight < min {
@@ -277,7 +274,7 @@ func findMinIdx(xs []HeapNode) int {
 
 func findMinIdxExcept(xs []HeapNode, except int) int {
 	minIdx := -1
-	min := maxInt
+	min := constant.MaxInt
 
 	for i := 0; i < len(xs); i++ {
 		if i != except && xs[i].weight < min {
