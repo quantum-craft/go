@@ -10,8 +10,8 @@ type Stack struct {
 	topIdx int
 }
 
-// MakeStack returns an empty stack
-func MakeStack() Stack {
+// NewStack returns an empty stack
+func NewStack() Stack {
 	return Stack{
 		topIdx: -1,
 	}
@@ -40,8 +40,8 @@ func (stack *Stack) Pop() DataElement {
 	return ret
 }
 
-// PeekTop returns the top element without poping it
-func (stack *Stack) PeekTop() DataElement {
+// Peek returns the top element without poping it
+func (stack *Stack) Peek() DataElement {
 	if stack.topIdx < 0 {
 		return nil
 	}
@@ -58,11 +58,11 @@ func (stack *Stack) Peek2ndTop() DataElement {
 	return stack.data[stack.topIdx-1]
 }
 
-// IsEmpty tell whether the stack is empty
-func (stack *Stack) IsEmpty() bool {
+// Empty tell whether the stack is empty
+func (stack *Stack) Empty() bool {
 	if stack.topIdx < 0 {
-		return false
+		return true
 	}
 
-	return true
+	return false
 }

@@ -24,14 +24,14 @@ func TestStack(t *testing.T) {
 
 	}
 
-	stack := MakeStack()
+	stack := NewStack()
 
 	for i := 0; i < len(data); i++ {
 		stack.Push(data[i])
 	}
 
 	for i := len(data) - 1; i >= 0; i-- {
-		peek := stack.PeekTop()
+		peek := stack.Peek()
 		d := stack.Pop()
 
 		if d != peek {
