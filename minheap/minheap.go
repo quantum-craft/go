@@ -22,6 +22,17 @@ func MakeMinHeap() MinHeap {
 	}
 }
 
+// Empty returns whether heap is empty
+func (minheap *MinHeap) Empty() bool {
+	lastEmpty := minheap.lastEmpty
+
+	if *lastEmpty == 0 {
+		return true
+	}
+
+	return false
+}
+
 // Insert will insert the node at the bottom and re-heapify
 func (minheap *MinHeap) Insert(n HeapNode) {
 	lastEmpty, heap := minheap.lastEmpty, minheap.heap
