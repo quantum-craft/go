@@ -1,12 +1,20 @@
-package stack
+package list
 
-// DataElement is used to store data in stack
-type DataElement interface {
-}
+// MaxUint is MaxUint
+const MaxUint = ^uint(0)
+
+// MinUint is MinUint
+const MinUint = uint(0)
+
+// MaxInt is MaxInt
+const MaxInt = int(MaxUint >> 1)
+
+// MinInt is MinInt
+const MinInt = -MaxInt - 1
 
 // Stack is the data keeper
 type Stack struct {
-	data   []DataElement
+	data   []int
 	topIdx int
 }
 
@@ -18,7 +26,7 @@ func NewStack() Stack {
 }
 
 // Push is used to push data into stack
-func (stack *Stack) Push(d DataElement) {
+func (stack *Stack) Push(d int) {
 	if stack.topIdx == len(stack.data)-1 {
 		stack.data = append(stack.data, d)
 		stack.topIdx++
@@ -29,9 +37,9 @@ func (stack *Stack) Push(d DataElement) {
 }
 
 // Pop returns the top element
-func (stack *Stack) Pop() DataElement {
+func (stack *Stack) Pop() int {
 	if stack.topIdx < 0 {
-		return nil
+		return MinInt
 	}
 
 	ret := (stack.data)[stack.topIdx]
@@ -41,18 +49,18 @@ func (stack *Stack) Pop() DataElement {
 }
 
 // Peek returns the top element without poping it
-func (stack *Stack) Peek() DataElement {
+func (stack *Stack) Peek() int {
 	if stack.topIdx < 0 {
-		return nil
+		return MinInt
 	}
 
 	return stack.data[stack.topIdx]
 }
 
 // PeekSecond returns the second top element without poping it
-func (stack *Stack) PeekSecond() DataElement {
+func (stack *Stack) PeekSecond() int {
 	if stack.topIdx <= 0 {
-		return nil
+		return MinInt
 	}
 
 	return stack.data[stack.topIdx-1]

@@ -2,47 +2,56 @@ package list
 
 import "container/list"
 
-type queue struct {
+// Queue is Queue
+type Queue struct {
 	list *list.List
 }
 
-func newQueue() *queue {
-	return &queue{
+// NewQueue is NewQueue
+func NewQueue() *Queue {
+	return &Queue{
 		list: list.New(),
 	}
 }
 
-func (q *queue) front() int {
+// Front is Front
+func (q *Queue) Front() int {
 	return q.list.Front().Value.(int)
 }
 
-func (q *queue) back() int {
+// Back is Back
+func (q *Queue) Back() int {
 	return q.list.Back().Value.(int)
 }
 
-func (q *queue) popFront() {
+// PopFront is PopFront
+func (q *Queue) PopFront() {
 	q.list.Remove(q.list.Front())
 }
 
-func (q *queue) frontAndPop() int {
+// FrontAndPop is FrontAndPop
+func (q *Queue) FrontAndPop() int {
 	e := q.list.Front()
 	q.list.Remove(e)
 
 	return e.Value.(int)
 }
 
-func (q *queue) popBack() {
+// PopBack is PopBack
+func (q *Queue) PopBack() {
 	q.list.Remove(q.list.Back())
 }
 
-func (q *queue) backAndPop() int {
+// BackAndPop is BackAndPop
+func (q *Queue) BackAndPop() int {
 	e := q.list.Back()
 	q.list.Remove(e)
 
 	return e.Value.(int)
 }
 
-func (q *queue) empty() bool {
+// Empty is Empty
+func (q *Queue) Empty() bool {
 	if q.list.Len() > 0 {
 		return false
 	}
@@ -50,14 +59,17 @@ func (q *queue) empty() bool {
 	return true
 }
 
-func (q *queue) pushBack(d int) {
+// PushBack is PushBack
+func (q *Queue) PushBack(d int) {
 	q.list.PushBack(d)
 }
 
-func (q *queue) pushFront(d int) {
+// PushFront is PushFront
+func (q *Queue) PushFront(d int) {
 	q.list.PushFront(d)
 }
 
-func (q *queue) size() int {
+// Size is Size
+func (q *Queue) Size() int {
 	return q.list.Len()
 }

@@ -1,26 +1,30 @@
 package list
 
-type node struct {
+// Node is Node
+type Node struct {
 	val  int
-	next *node
-	prev *node
+	next *Node
+	prev *Node
 }
 
-type dlist struct {
-	head *node
-	tail *node
+// Dlist is Dlist
+type Dlist struct {
+	head *Node
+	tail *Node
 }
 
-func newList() *dlist {
-	head := node{}
-	tail := node{}
+// NewList is NewList
+func NewList() *Dlist {
+	head := Node{}
+	tail := Node{}
 	head.next = &tail
 	tail.prev = &head
 
-	return &dlist{head: &head, tail: &tail}
+	return &Dlist{head: &head, tail: &tail}
 }
 
-func (l *dlist) empty() bool {
+// Empty is Empty
+func (l *Dlist) Empty() bool {
 	if l.head.next == l.tail {
 		return true
 	}
@@ -28,23 +32,26 @@ func (l *dlist) empty() bool {
 	return false
 }
 
-func (l *dlist) front() *node {
-	if !l.empty() {
+// Front is Front
+func (l *Dlist) Front() *Node {
+	if !l.Empty() {
 		return l.head.next
 	}
 
 	return nil
 }
 
-func (l *dlist) back() *node {
-	if !l.empty() {
+// Back is Back
+func (l *Dlist) Back() *Node {
+	if !l.Empty() {
 		return l.tail.prev
 	}
 
 	return nil
 }
 
-func (l *dlist) remove(n *node) {
+// Remove is Remove
+func (l *Dlist) Remove(n *Node) {
 	n.prev.next = n.next
 	n.next.prev = n.prev
 
@@ -52,14 +59,16 @@ func (l *dlist) remove(n *node) {
 	n.next = nil
 }
 
-func (l *dlist) pushFront(n *node) {
+// PushFront is PushFront
+func (l *Dlist) PushFront(n *Node) {
 	n.prev = l.head
 	n.next = l.head.next
 	l.head.next = n
 	n.next.prev = n
 }
 
-func (l *dlist) pushBack(n *node) {
+// PushBack is PushBack
+func (l *Dlist) PushBack(n *Node) {
 	n.next = l.tail
 	n.prev = l.tail.prev
 	l.tail.prev = n
