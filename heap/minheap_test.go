@@ -1,4 +1,4 @@
-package minheap
+package heap
 
 import (
 	"bufio"
@@ -25,24 +25,23 @@ type Edge struct {
 	Weight int
 }
 
-// Node is the node unit in min-heap for Dijkstra algorithm
-type Node struct {
+type node struct {
 	Key *Vertex
 }
 
-func (n Node) GetCost() int {
+func (n node) GetCost() int {
 	return n.Key.Score
 }
 
-func (n Node) SetCost(newCost int) {
+func (n node) SetCost(newCost int) {
 	n.Key.Score = newCost
 }
 
-func (n Node) GetHeapIdx() int {
+func (n node) GetHeapIdx() int {
 	return n.Key.heapIdx
 }
 
-func (n Node) SetHeapIdx(idx int) {
+func (n node) SetHeapIdx(idx int) {
 	n.Key.heapIdx = idx
 }
 
@@ -74,17 +73,17 @@ func TestHeapSortLarge(t *testing.T) {
 		line, err = r.ReadString('\n')
 	}
 
-	minheap := MakeMinHeap()
+	minheap := NewMinHeap()
 
 	for i := 0; i < len(numbers); i++ {
-		minheap.Insert(Node{Key: &Vertex{Score: numbers[i]}})
+		minheap.Insert(node{Key: &Vertex{Score: numbers[i]}})
 	}
 
 	ans := make([]int, 0)
-	n, ok := minheap.ExtractMin().(Node)
+	n, ok := minheap.ExtractMin().(node)
 	for ok == true {
 		ans = append(ans, n.Key.Score)
-		n, ok = minheap.ExtractMin().(Node)
+		n, ok = minheap.ExtractMin().(node)
 	}
 
 	if !SliceIncreasing(ans) {

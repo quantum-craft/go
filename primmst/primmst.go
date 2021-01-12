@@ -2,7 +2,7 @@ package primmst
 
 import (
 	"github.com/quantum-craft/go/constant"
-	heap "github.com/quantum-craft/go/minheap"
+	"github.com/quantum-craft/go/heap"
 )
 
 // Vertex is used for undirected graph in Prim's mst algorithm
@@ -55,7 +55,7 @@ func otherVert(edge *Edge, vidx int) int {
 func PrimMST(vertices []Vertex, edges []Edge, startIdx int) int {
 	mstcost := 0
 
-	minheap := heap.MakeMinHeap()
+	minheap := heap.NewMinHeap()
 	for i := 0; i < len(vertices); i++ {
 		if i == startIdx {
 			continue

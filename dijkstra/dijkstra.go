@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/quantum-craft/go/constant"
-	heap "github.com/quantum-craft/go/minheap"
+	heap "github.com/quantum-craft/go/heap"
 )
 
 // Vertex is an element of V of a Graph G(V, E)
@@ -52,7 +52,7 @@ func (n Node) SetHeapIdx(idx int) {
 
 // Dijkstra computes shortest path from startIdx to all other reachable nodes
 func Dijkstra(vertices []Vertex, edges []Edge, startIdx int) {
-	minheap := heap.MakeMinHeap()
+	minheap := heap.NewMinHeap()
 
 	vertices[startIdx].Score = 0 // source
 	minheap.Insert(Node{Key: &vertices[startIdx]})

@@ -10,7 +10,7 @@ import (
 
 	"github.com/quantum-craft/go/constant"
 
-	heap "github.com/quantum-craft/go/minheap"
+	heap "github.com/quantum-craft/go/heap"
 	queue "github.com/quantum-craft/go/queue"
 	sort "github.com/quantum-craft/go/sort"
 )
@@ -183,7 +183,7 @@ var r = rand.New(rand.NewSource(time.Now().Unix()))
 // Encoding encodes the input alphabets into a Huffman tree
 // Using min-heap to track 2 smallest members
 func Encoding(file string) HeapNode {
-	minheap := heap.MakeMinHeap()
+	minheap := heap.NewMinHeap()
 
 	f, _ := os.Open(file)
 	defer f.Close()
