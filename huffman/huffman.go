@@ -208,8 +208,8 @@ func Encoding(file string) HeapNode {
 
 	var root HeapNode
 	for {
-		n1, _ := minheap.ExtractMin().(HeapNode)
-		n2, haveTwo := minheap.ExtractMin().(HeapNode)
+		n1, _ := minheap.PopMin().(HeapNode)
+		n2, haveTwo := minheap.PopMin().(HeapNode)
 
 		if haveTwo == false {
 			root = n1

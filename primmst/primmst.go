@@ -75,7 +75,7 @@ func PrimMST(vertices []Vertex, edges []Edge, startIdx int) int {
 		}
 	}
 
-	n, ok := minheap.ExtractMin().(heapNode)
+	n, ok := minheap.PopMin().(heapNode)
 	for ok == true {
 		mstcost += *n.minCost
 
@@ -87,7 +87,7 @@ func PrimMST(vertices []Vertex, edges []Edge, startIdx int) int {
 			}
 		}
 
-		n, ok = minheap.ExtractMin().(heapNode)
+		n, ok = minheap.PopMin().(heapNode)
 	}
 
 	return mstcost

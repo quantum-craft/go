@@ -40,15 +40,23 @@ func TestMaxHeapSortLarge(t *testing.T) {
 
 	maxheap := NewMaxHeap()
 
+	if maxheap.Size() != 0 {
+		t.Error("HeapSort error !")
+	}
+
 	for i := 0; i < len(numbers); i++ {
 		maxheap.Insert(node{Key: &Vertex{Score: numbers[i]}})
+
+		if maxheap.Size() != i+1 {
+			t.Error("HeapSort error !")
+		}
 	}
 
 	ans := make([]int, 0)
-	n, ok := maxheap.ExtractMax().(node)
+	n, ok := maxheap.PopMax().(node)
 	for ok == true {
 		ans = append(ans, n.Key.Score)
-		n, ok = maxheap.ExtractMax().(node)
+		n, ok = maxheap.PopMax().(node)
 	}
 
 	if !SliceDecreasing(ans) {

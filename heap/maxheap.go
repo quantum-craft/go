@@ -7,8 +7,8 @@ type MaxHeap struct {
 }
 
 // NewMaxHeap returns an empty max-heap
-func NewMaxHeap() MaxHeap {
-	return MaxHeap{
+func NewMaxHeap() *MaxHeap {
+	return &MaxHeap{
 		heap:      &[]Node{},
 		lastEmpty: new(int),
 	}
@@ -23,6 +23,12 @@ func (maxheap *MaxHeap) Empty() bool {
 	}
 
 	return false
+}
+
+// Size returns the heap's size
+func (maxheap *MaxHeap) Size() int {
+	lastEmpty := maxheap.lastEmpty
+	return *lastEmpty
 }
 
 // Insert will insert the node at the bottom and re-heapify
@@ -42,9 +48,9 @@ func (maxheap *MaxHeap) Insert(n Node) {
 	maxheap.bubbleUp(*lastEmpty)
 }
 
-// ExtractMax will extract the maximum member, replace the maximum pos with the last member,
+// PopMax will pop the maximum member, replace the maximum pos with the last member,
 // and re-heapify
-func (maxheap *MaxHeap) ExtractMax() Node {
+func (maxheap *MaxHeap) PopMax() Node {
 	lastEmpty, heap := maxheap.lastEmpty, maxheap.heap
 
 	if *lastEmpty == 0 {

@@ -57,7 +57,7 @@ func Dijkstra(vertices []Vertex, edges []Edge, startIdx int) {
 	vertices[startIdx].Score = 0 // source
 	minheap.Insert(Node{Key: &vertices[startIdx]})
 
-	n, ok := minheap.ExtractMin().(Node)
+	n, ok := minheap.PopMin().(Node)
 	for ok == true {
 		n.Key.Explored = true
 		for i, edges := 0, n.Key.Edges; i < len(n.Key.Edges); i++ {
@@ -73,7 +73,7 @@ func Dijkstra(vertices []Vertex, edges []Edge, startIdx int) {
 			}
 		}
 
-		n, ok = minheap.ExtractMin().(Node)
+		n, ok = minheap.PopMin().(Node)
 	}
 }
 

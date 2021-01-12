@@ -15,8 +15,8 @@ type MinHeap struct {
 }
 
 // NewMinHeap returns an empty min-heap
-func NewMinHeap() MinHeap {
-	return MinHeap{
+func NewMinHeap() *MinHeap {
+	return &MinHeap{
 		heap:      &[]Node{},
 		lastEmpty: new(int),
 	}
@@ -31,6 +31,12 @@ func (minheap *MinHeap) Empty() bool {
 	}
 
 	return false
+}
+
+// Size returns the heap's size
+func (minheap *MinHeap) Size() int {
+	lastEmpty := minheap.lastEmpty
+	return *lastEmpty
 }
 
 // Insert will insert the node at the bottom and re-heapify
@@ -50,9 +56,9 @@ func (minheap *MinHeap) Insert(n Node) {
 	minheap.bubbleUp(*lastEmpty)
 }
 
-// ExtractMin will extract the minimum member, replace the minimum pos with the last member,
+// PopMin will pop the minimum member, replace the minimum pos with the last member,
 // and re-heapify
-func (minheap *MinHeap) ExtractMin() Node {
+func (minheap *MinHeap) PopMin() Node {
 	lastEmpty, heap := minheap.lastEmpty, minheap.heap
 
 	if *lastEmpty == 0 {

@@ -80,10 +80,10 @@ func TestHeapSortLarge(t *testing.T) {
 	}
 
 	ans := make([]int, 0)
-	n, ok := minheap.ExtractMin().(node)
+	n, ok := minheap.PopMin().(node)
 	for ok == true {
 		ans = append(ans, n.Key.Score)
-		n, ok = minheap.ExtractMin().(node)
+		n, ok = minheap.PopMin().(node)
 	}
 
 	if !SliceIncreasing(ans) {
