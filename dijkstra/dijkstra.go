@@ -57,12 +57,13 @@ func Dijkstra(vertices []Vertex, edges []Edge, startIdx int) {
 	vertices[startIdx].Score = 0 // source
 	minheap.Insert(Node{Key: &vertices[startIdx]})
 
-	n, ok := minheap.PopMin().(Node)
-	for ok == true {
+	for !minheap.Empty() {
+		n, _ := minheap.PopMin().(Node)
+
 		n.Key.Explored = true
+
 		for i, edges := 0, n.Key.Edges; i < len(n.Key.Edges); i++ {
 			if edges[i].Head.Explored == false {
-
 				// check whether Head exists in heap
 				if edges[i].Head.heapIdx == -1 {
 					edges[i].Head.Score = n.Key.Score + edges[i].Weight
@@ -72,8 +73,6 @@ func Dijkstra(vertices []Vertex, edges []Edge, startIdx int) {
 				}
 			}
 		}
-
-		n, ok = minheap.PopMin().(Node)
 	}
 }
 
