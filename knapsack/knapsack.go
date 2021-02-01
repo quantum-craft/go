@@ -21,7 +21,7 @@ func knapsack(input []item, W int) int {
 	}
 
 	for i := 1; i < len(dp); i++ {
-		for w := 1; w <= W; w++ {
+		for w := 1; w < len(dp[i]); w++ {
 			item := input[i-1]
 			dp[i][w] = dp[i-1][w]
 
