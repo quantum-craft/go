@@ -15,25 +15,23 @@ func MergeSort(xs []int) []int {
 func Merge(xs []int, ys []int) []int {
 	res := make([]int, len(xs)+len(ys))
 
-	i, j := 0, 0
-	for k := 0; k < len(res); k++ {
-		if i == len(xs) {
-			copy(res[k:], ys[j:])
-			break
-		}
-
-		if j == len(ys) {
-			copy(res[k:], xs[i:])
-			break
-		}
-
-		if xs[i] <= ys[j] {
+	i, j, k := 0, 0, 0
+	for i < len(xs) && j < len(ys) {
+		if xs[i] < ys[j] {
 			res[k] = xs[i]
 			i++
 		} else {
 			res[k] = ys[j]
 			j++
 		}
+
+		k++
+	}
+
+	if i != len(xs) {
+		copy(res[k:], xs[i:])
+	} else if j != len(ys) {
+		copy(res[k:], ys[j:])
 	}
 
 	return res
