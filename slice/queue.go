@@ -4,7 +4,7 @@ type Queue struct {
 	data []int
 }
 
-func (q *Queue) NewQueue() *Queue {
+func NewQueue() *Queue {
 	return &Queue{
 		data: make([]int, 0),
 	}
@@ -23,4 +23,8 @@ func (q *Queue) PopFront() int {
 
 func (q *Queue) Empty() bool {
 	return len(q.data) == 0
+}
+
+func (q *Queue) Len() int {
+	return len(q.data)
 }
