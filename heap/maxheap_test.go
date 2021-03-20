@@ -28,7 +28,7 @@ func TestMaxHeapSortLarge(t *testing.T) {
 	r := bufio.NewReader(f)
 	line, err := r.ReadString('\n')
 
-	numbers := make([]int, 0, 0)
+	numbers := make([]int, 0)
 
 	for err == nil {
 		i, _ := strconv.Atoi(strings.TrimSuffix(line, lineEnding))

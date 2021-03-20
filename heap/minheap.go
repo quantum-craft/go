@@ -1,7 +1,7 @@
 package heap
 
-// Node is the node unit in min-heap
-type Node interface {
+// INode is the node interface in min-heap
+type INode interface {
 	GetCost() int
 	SetCost(int)
 	GetHeapIdx() int
@@ -10,14 +10,14 @@ type Node interface {
 
 // MinHeap keeps minimum element on the top and also keeps the heap property
 type MinHeap struct {
-	heap      *[]Node
+	heap      *[]INode
 	lastEmpty *int
 }
 
 // NewMinHeap returns an empty min-heap
 func NewMinHeap() *MinHeap {
 	return &MinHeap{
-		heap:      &[]Node{},
+		heap:      &[]INode{},
 		lastEmpty: new(int),
 	}
 }
@@ -26,11 +26,7 @@ func NewMinHeap() *MinHeap {
 func (minheap *MinHeap) Empty() bool {
 	lastEmpty := minheap.lastEmpty
 
-	if *lastEmpty == 0 {
-		return true
-	}
-
-	return false
+	return *lastEmpty == 0
 }
 
 // Size returns the heap's size
@@ -40,7 +36,7 @@ func (minheap *MinHeap) Size() int {
 }
 
 // Insert will insert the node at the bottom and re-heapify
-func (minheap *MinHeap) Insert(n Node) {
+func (minheap *MinHeap) Insert(n INode) {
 	lastEmpty, heap := minheap.lastEmpty, minheap.heap
 
 	if *lastEmpty == len(*heap) {
@@ -58,11 +54,11 @@ func (minheap *MinHeap) Insert(n Node) {
 
 // PopMin will pop the minimum member, replace the minimum pos with the last member,
 // and re-heapify
-func (minheap *MinHeap) PopMin() Node {
+func (minheap *MinHeap) PopMin() INode {
 	lastEmpty, heap := minheap.lastEmpty, minheap.heap
 
 	if *lastEmpty == 0 {
-		var ret Node
+		var ret INode
 		return ret
 	}
 
@@ -99,8 +95,8 @@ func (minheap *MinHeap) ForceUpdate(heapIdx int, newCost int) {
 	}
 }
 
-// Update updates cost when it is smaller
-func (minheap *MinHeap) Update(heapIdx int, newCost int) {
+// UpdateIfSmaller updates cost when it is smaller
+func (minheap *MinHeap) UpdateIfSmaller(heapIdx int, newCost int) {
 	lastEmpty, heap := minheap.lastEmpty, minheap.heap
 
 	if heapIdx >= *lastEmpty {
@@ -116,11 +112,11 @@ func (minheap *MinHeap) Update(heapIdx int, newCost int) {
 }
 
 // PeekAt provides the element at heapIdx
-func (minheap *MinHeap) PeekAt(heapIdx int) Node {
+func (minheap *MinHeap) PeekAt(heapIdx int) INode {
 	lastEmpty, heap := minheap.lastEmpty, minheap.heap
 
 	if heapIdx >= *lastEmpty {
-		var ret Node
+		var ret INode
 		return ret
 	}
 
@@ -128,11 +124,11 @@ func (minheap *MinHeap) PeekAt(heapIdx int) Node {
 }
 
 // PeekMin provides the min element without poping it
-func (minheap *MinHeap) PeekMin() Node {
+func (minheap *MinHeap) PeekMin() INode {
 	lastEmpty, heap := minheap.lastEmpty, minheap.heap
 
 	if *lastEmpty == 0 {
-		var ret Node
+		var ret INode
 		return ret
 	}
 
@@ -201,7 +197,7 @@ func (minheap *MinHeap) downHere(p int) int {
 }
 
 // pos is one based
-func findMinPos2(heap *[]Node, pos1 int, pos2 int) int {
+func findMinPos2(heap *[]INode, pos1 int, pos2 int) int {
 	if (*heap)[pos1-1].GetCost() < (*heap)[pos2-1].GetCost() {
 		return pos1
 	}
@@ -210,11 +206,11 @@ func findMinPos2(heap *[]Node, pos1 int, pos2 int) int {
 }
 
 // pos is one based
-func findMinPos3(heap *[]Node, pos1 int, pos2 int, pos3 int) int {
+func findMinPos3(heap *[]INode, pos1 int, pos2 int, pos3 int) int {
 	return findMinPos2(heap, findMinPos2(heap, pos1, pos2), pos3)
 }
 
-func swapNode(heap *[]Node, this int, that int) {
+func swapNode(heap *[]INode, this int, that int) {
 	(*heap)[this], (*heap)[that] = (*heap)[that], (*heap)[this]
 	(*heap)[this].SetHeapIdx(this)
 	(*heap)[that].SetHeapIdx(that)

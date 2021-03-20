@@ -12,7 +12,6 @@ import (
 
 // Vertex is an element of V of a Graph G(V, E)
 type Vertex struct {
-	idx      int
 	heapIdx  int
 	Score    int // Dijkstra's greedy score
 	Explored bool
@@ -63,7 +62,7 @@ func TestHeapSortLarge(t *testing.T) {
 	r := bufio.NewReader(f)
 	line, err := r.ReadString('\n')
 
-	numbers := make([]int, 0, 0)
+	numbers := make([]int, 0)
 
 	for err == nil {
 		i, _ := strconv.Atoi(strings.TrimSuffix(line, lineEnding))

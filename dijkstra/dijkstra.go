@@ -63,13 +63,13 @@ func Dijkstra(vertices []Vertex, edges []Edge, startIdx int) {
 		n.Key.Explored = true
 
 		for i, edges := 0, n.Key.Edges; i < len(n.Key.Edges); i++ {
-			if edges[i].Head.Explored == false {
+			if !edges[i].Head.Explored {
 				// check whether Head exists in heap
 				if edges[i].Head.heapIdx == -1 {
 					edges[i].Head.Score = n.Key.Score + edges[i].Weight
 					minheap.Insert(Node{Key: edges[i].Head})
 				} else {
-					minheap.Update(edges[i].Head.heapIdx, n.Key.Score+edges[i].Weight)
+					minheap.UpdateIfSmaller(edges[i].Head.heapIdx, n.Key.Score+edges[i].Weight)
 				}
 			}
 		}

@@ -2,14 +2,14 @@ package heap
 
 // MaxHeap keeps maximum element on the top and also keeps the heap property
 type MaxHeap struct {
-	heap      *[]Node
+	heap      *[]INode
 	lastEmpty *int
 }
 
 // NewMaxHeap returns an empty max-heap
 func NewMaxHeap() *MaxHeap {
 	return &MaxHeap{
-		heap:      &[]Node{},
+		heap:      &[]INode{},
 		lastEmpty: new(int),
 	}
 }
@@ -18,11 +18,7 @@ func NewMaxHeap() *MaxHeap {
 func (maxheap *MaxHeap) Empty() bool {
 	lastEmpty := maxheap.lastEmpty
 
-	if *lastEmpty == 0 {
-		return true
-	}
-
-	return false
+	return *lastEmpty == 0
 }
 
 // Size returns the heap's size
@@ -32,7 +28,7 @@ func (maxheap *MaxHeap) Size() int {
 }
 
 // Insert will insert the node at the bottom and re-heapify
-func (maxheap *MaxHeap) Insert(n Node) {
+func (maxheap *MaxHeap) Insert(n INode) {
 	lastEmpty, heap := maxheap.lastEmpty, maxheap.heap
 
 	if *lastEmpty == len(*heap) {
@@ -50,11 +46,11 @@ func (maxheap *MaxHeap) Insert(n Node) {
 
 // PopMax will pop the maximum member, replace the maximum pos with the last member,
 // and re-heapify
-func (maxheap *MaxHeap) PopMax() Node {
+func (maxheap *MaxHeap) PopMax() INode {
 	lastEmpty, heap := maxheap.lastEmpty, maxheap.heap
 
 	if *lastEmpty == 0 {
-		var ret Node
+		var ret INode
 		return ret
 	}
 
@@ -108,11 +104,11 @@ func (maxheap *MaxHeap) Update(heapIdx int, newCost int) {
 }
 
 // PeekAt provides the element at heapIdx
-func (maxheap *MaxHeap) PeekAt(heapIdx int) Node {
+func (maxheap *MaxHeap) PeekAt(heapIdx int) INode {
 	lastEmpty, heap := maxheap.lastEmpty, maxheap.heap
 
 	if heapIdx >= *lastEmpty {
-		var ret Node
+		var ret INode
 		return ret
 	}
 
@@ -120,11 +116,11 @@ func (maxheap *MaxHeap) PeekAt(heapIdx int) Node {
 }
 
 // PeekMax provides the min element without poping it
-func (maxheap *MaxHeap) PeekMax() Node {
+func (maxheap *MaxHeap) PeekMax() INode {
 	lastEmpty, heap := maxheap.lastEmpty, maxheap.heap
 
 	if *lastEmpty == 0 {
-		var ret Node
+		var ret INode
 		return ret
 	}
 
@@ -193,7 +189,7 @@ func (maxheap *MaxHeap) downHere(p int) int {
 }
 
 // pos is one based
-func findMaxPos2(heap *[]Node, pos1 int, pos2 int) int {
+func findMaxPos2(heap *[]INode, pos1 int, pos2 int) int {
 	if (*heap)[pos1-1].GetCost() > (*heap)[pos2-1].GetCost() {
 		return pos1
 	}
@@ -202,6 +198,6 @@ func findMaxPos2(heap *[]Node, pos1 int, pos2 int) int {
 }
 
 // pos is one based
-func findMaxPos3(heap *[]Node, pos1 int, pos2 int, pos3 int) int {
+func findMaxPos3(heap *[]INode, pos1 int, pos2 int, pos3 int) int {
 	return findMaxPos2(heap, findMaxPos2(heap, pos1, pos2), pos3)
 }

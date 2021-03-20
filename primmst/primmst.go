@@ -71,19 +71,19 @@ func PrimMST(vertices []Vertex, edges []Edge, startIdx int) int {
 		h := vertices[otherVert(e, v.VIdx)].HeapIdx
 
 		if h != -1 {
-			minheap.Update(h, e.Cost)
+			minheap.UpdateIfSmaller(h, e.Cost)
 		}
 	}
 
 	n, ok := minheap.PopMin().(heapNode)
-	for ok == true {
+	for ok {
 		mstcost += *n.minCost
 
 		for j, v := 0, n.vert; j < len(v.Edges); j++ {
 			e := v.Edges[j]
 			h := vertices[otherVert(e, v.VIdx)].HeapIdx
 			if h != -1 {
-				minheap.Update(h, e.Cost)
+				minheap.UpdateIfSmaller(h, e.Cost)
 			}
 		}
 
