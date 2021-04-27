@@ -1,5 +1,30 @@
 package heap
 
+/* sample usage
+type node struct {
+	idx      int
+	cost     int
+	heapIdx  int
+	explored bool
+}
+
+func (n *node) GetCost() int {
+	return n.cost
+}
+
+func (n *node) SetCost(c int) {
+	n.cost = c
+}
+
+func (n *node) GetHeapIdx() int {
+	return n.heapIdx
+}
+
+func (n *node) SetHeapIdx(i int) {
+	n.heapIdx = i
+}
+*/
+
 // INode is the node interface in min-heap
 type INode interface {
 	GetCost() int
