@@ -29,21 +29,21 @@ func (q *Queue) Len() int {
 	return len(q.data)
 }
 
-// func (q *Queue) PushFront(i int) {
-// 	q.data = append([]int{i}, q.data...)
-// }
+func (q *Queue) PushFront(i int) {
+	q.data = append([]int{i}, q.data...)
+}
 
-// func (q *Queue) PeekFront() int {
-// 	return q.data[0]
-// }
+func (q *Queue) PeekFront() int {
+	return q.data[0]
+}
 
-// func (q *Queue) PopBack() int {
-// 	ret := q.data[len(q.data)-1]
-// 	q.data = q.data[:len(q.data)-1]
+func (q *Queue) PopBack() int {
+	ret := q.data[len(q.data)-1]
+	q.data = q.data[:len(q.data)-1]
 
-// 	return ret
-// }
+	return ret
+}
 
-// func (q *Queue) PeekBack() int {
-// 	return q.data[len(q.data)-1]
-// }
+func (q *Queue) PeekBack() int {
+	return q.data[len(q.data)-1]
+}
