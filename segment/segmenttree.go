@@ -16,7 +16,7 @@ func NewTree(input []int) *Tree {
 
 	t := &Tree{nodes, len(input)}
 
-	t.build(input, 0, 0, len(input)-1)
+	t.build(input, 0, 0, t.origSize-1)
 
 	return t
 }
