@@ -16,7 +16,7 @@ func NewTree(input []int) *Tree {
 
 	t := &Tree{nodes, len(input)}
 
-	t.build(input, 0, 0, t.origSize-1)
+	t.buildUtil(input, 0, 0, t.origSize-1)
 
 	return t
 }
@@ -26,7 +26,7 @@ func (t *Tree) RangeMinQuery(left, right int) int {
 	if left > right {
 		left, right = right, left
 	}
-	return (&query{left: left, right: right, mins: t.mins}).rangeMinimum(0, 0, t.origSize-1)
+	return (&query{left: left, right: right, mins: t.mins}).rangeMinimumUtil(0, 0, t.origSize-1)
 }
 
 func (t *Tree) Add(pos int, x int) {
@@ -34,20 +34,20 @@ func (t *Tree) Add(pos int, x int) {
 }
 
 // Below are utils
-func (t *Tree) build(input []int, curr int, leftBound, rightBound int) {
+func (t *Tree) buildUtil(input []int, curr int, leftBound, rightBound int) {
 	if leftBound == rightBound {
 		t.mins[curr] = input[leftBound]
 		return
 	}
 
 	mid := (leftBound + rightBound) / 2
-	t.build(input, 2*curr+1, leftBound, mid)
-	t.build(input, 2*curr+2, mid+1, rightBound)
+	t.buildUtil(input, 2*curr+1, leftBound, mid)
+	t.buildUtil(input, 2*curr+2, mid+1, rightBound)
 
 	t.mins[curr] = min(t.mins[2*curr+1], t.mins[2*curr+2])
 }
 
-func (q *query) rangeMinimum(curr int, leftBound, rightBound int) int {
+func (q *query) rangeMinimumUtil(curr int, leftBound, rightBound int) int {
 	if q.left > rightBound || q.right < leftBound {
 		return math.MaxInt32
 	}
@@ -57,7 +57,7 @@ func (q *query) rangeMinimum(curr int, leftBound, rightBound int) int {
 	}
 
 	mid := (leftBound + rightBound) / 2
-	return min(q.rangeMinimum(2*curr+1, leftBound, mid), q.rangeMinimum(2*curr+2, mid+1, rightBound))
+	return min(q.rangeMinimumUtil(2*curr+1, leftBound, mid), q.rangeMinimumUtil(2*curr+2, mid+1, rightBound))
 }
 
 func (t *Tree) addUtil(pos int, x int, curr int, leftBound, rightBound int) {
