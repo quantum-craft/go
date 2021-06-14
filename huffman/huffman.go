@@ -3,10 +3,8 @@ package huffman
 import (
 	"bufio"
 	"fmt"
-	"math/rand"
 	"os"
 	"strconv"
-	"time"
 
 	"github.com/quantum-craft/go/constant"
 
@@ -66,11 +64,7 @@ func (a ConcreteData) Len() int {
 
 // LessThan implements interface sort.Data
 func (a ConcreteData) LessThan(i, j int) bool {
-	if a.d[i].weight < a.d[j].weight {
-		return true
-	}
-
-	return false
+	return a.d[i].weight < a.d[j].weight
 }
 
 // Get implements interface sort.Data
@@ -178,8 +172,6 @@ func EncodingWithQueue(file string) HeapNode {
 	return root
 }
 
-var r = rand.New(rand.NewSource(time.Now().Unix()))
-
 // Encoding encodes the input alphabets into a Huffman tree
 // Using min-heap to track 2 smallest members
 func Encoding(file string) HeapNode {
@@ -211,7 +203,7 @@ func Encoding(file string) HeapNode {
 		n1, _ := minheap.PopMin().(HeapNode)
 		n2, haveTwo := minheap.PopMin().(HeapNode)
 
-		if haveTwo == false {
+		if !haveTwo {
 			root = n1
 			break
 		}
