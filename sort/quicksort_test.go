@@ -27,11 +27,7 @@ func (a ConcreteData) Len() int {
 }
 
 func (a ConcreteData) LessThan(i, j int) bool {
-	if a.d[i] < a.d[j] {
-		return true
-	}
-
-	return false
+	return a.d[i] < a.d[j]
 }
 
 func (a ConcreteData) Get(i int) interface{} {

@@ -20,7 +20,8 @@ func quickSort(xs []int, low, high int) {
 func findKth(xs []int, k int, low, high int) int {
 	target := low + k - 1
 	for high > low {
-		mid := partition(xs, target, low, high)
+		pivotIdx := low + rand.Intn(high-low+1)
+		mid := partition(xs, pivotIdx, low, high)
 
 		if mid == target {
 			return mid
