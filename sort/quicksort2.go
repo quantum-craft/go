@@ -35,8 +35,8 @@ func findKth(xs []int, k int, low, high int) int {
 	return low
 }
 
-func partition(xs []int, pIdx int, low, high int) int {
-	swap(xs, low, pIdx)
+func partition(xs []int, pivotIdx int, low, high int) int {
+	swap(xs, low, pivotIdx)
 
 	i := low
 	for j := low; j <= high; j++ {
