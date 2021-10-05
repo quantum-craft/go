@@ -1,15 +1,16 @@
 package mwis
 
 // Mwis calculates the maximum-weight independent set
-func Mwis(weights []int) (cache []int) {
-	cache = make([]int, len(weights))
-	cache[0], cache[1] = 0, weights[1]
+func Mwis(nums []int) []int {
+	dp := make([]int, len(nums))
+	dp[0] = 0
+	dp[1] = nums[1]
 
-	for i := 2; i < len(cache); i++ {
-		cache[i] = max(cache[i-1], cache[i-2]+weights[i])
+	for i := 2; i < len(dp); i++ {
+		dp[i] = max(dp[i-1], dp[i-2]+nums[i])
 	}
 
-	return cache
+	return dp
 }
 
 // Reconstruct recovers the maximum-weight independent set from cache
@@ -26,7 +27,7 @@ func Reconstruct(cache []int, weights []int) (included []bool) {
 		}
 	}
 
-	if included[2] == false {
+	if !included[2] {
 		included[1] = true
 	}
 
