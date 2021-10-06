@@ -9,10 +9,6 @@ var items []item
 var table map[[2]int]int
 
 func knapsack(input []item, W int) int {
-	if W == 0 {
-		return 0
-	}
-
 	n := len(input)
 
 	dp := make([][]int, n+1)
@@ -20,18 +16,16 @@ func knapsack(input []item, W int) int {
 		dp[i] = make([]int, W+1)
 	}
 
-	for i := 1; i < len(dp); i++ {
-		for w := 1; w < len(dp[i]); w++ {
-			item := input[i-1]
-			dp[i][w] = dp[i-1][w]
-
-			if w-item.weight >= 0 {
-				dp[i][w] = max(dp[i][w], dp[i-1][w-item.weight]+item.value)
+	for i := 1; i <= n; i++ {
+		for j := 1; j <= W; j++ {
+			dp[i][j] = dp[i-1][j]
+			if j-input[i-1].weight >= 0 {
+				dp[i][j] = max(dp[i][j], dp[i-1][j-input[i-1].weight]+input[i-1].value)
 			}
 		}
 	}
 
-	return dp[len(input)][W]
+	return dp[n][W]
 }
 
 func knapsack2(input []item, W int) int {
