@@ -28,7 +28,7 @@ func knapsack(input []item, W int) int {
 	return dp[n][W]
 }
 
-func knapsack2(input []item, W int) int {
+func Knapsack2(input []item, W int) int {
 	items = input
 	table = make(map[[2]int]int)
 	n := len(items)
