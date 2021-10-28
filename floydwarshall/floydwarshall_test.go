@@ -25,6 +25,18 @@ func TestFloydwarshall(t *testing.T) {
 	}
 }
 
+func TestFloydwarshallLarge(t *testing.T) {
+	// filePath := "../data/largeG.txt"
+
+	// ans := FloydwarshallUtil(filePath)
+
+	// fmt.Println(ans)
+
+	// if ans != -19 {
+	// 	t.Error("TestFloydwarshall error !")
+	// }
+}
+
 func FloydwarshallUtil(filePath string) int {
 	f, _ := os.Open(filePath)
 	defer f.Close()
