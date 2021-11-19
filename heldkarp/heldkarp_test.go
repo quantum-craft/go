@@ -2,7 +2,6 @@ package heldkarp
 
 import (
 	"bufio"
-	"fmt"
 	"math"
 	"os"
 	"strconv"
@@ -18,8 +17,6 @@ func TestHeldKarp(t *testing.T) {
 	if int(math.Floor(ans)) != 8387 {
 		t.Error("HeldKarp error !")
 	}
-
-	fmt.Println(ans)
 }
 
 func ReadFile(filePath string) [][]float64 {

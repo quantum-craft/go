@@ -30,7 +30,8 @@ func heldkarp(points [][]float64) float64 {
 	for card := 2; card <= n-1; card++ {
 		for _, s := range subsets[card] {
 			for _, j := range s {
-				sSubJ := toInt(s) & (^(1 << j))
+				sWithJ := toInt(s)
+				sSubJ := sWithJ & (^(1 << j))
 
 				minimum := math.MaxFloat64
 				for _, k := range s {
@@ -41,7 +42,7 @@ func heldkarp(points [][]float64) float64 {
 					minimum = min(minimum, L[sSubJ][k]+dist(k, j, points))
 				}
 
-				L[toInt(s)][j] = minimum
+				L[sWithJ][j] = minimum
 			}
 		}
 	}
@@ -91,8 +92,8 @@ func PowerSet(L []int) [][]int {
 		x := Combinations(L, i)
 		res = append(res, x...)
 	}
-	return res
 
+	return res
 }
 
 func toDigits(i int, n int) []int {
